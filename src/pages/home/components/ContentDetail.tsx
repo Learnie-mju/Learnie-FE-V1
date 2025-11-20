@@ -139,7 +139,7 @@ const ContentDetail = () => {
       <div className="flex h-screen bg-white overflow-hidden relative">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-gray-500 font-Pretendard">로딩 중...</div>
+          <div className="text-gray-500 font-Pretendard">{t.loading}</div>
         </div>
       </div>
     );
@@ -151,7 +151,7 @@ const ContentDetail = () => {
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-gray-500 font-Pretendard">
-            강의 정보를 불러올 수 없습니다.
+            {t.content.failedToLoadLectureInfo}
           </div>
         </div>
       </div>
@@ -514,7 +514,7 @@ const ContentDetail = () => {
                       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
                         {isLoadingQuizList ? (
                           <div className="p-8 text-center text-gray-500 font-Pretendard">
-                            퀴즈 리스트를 불러오는 중...
+                            {t.loading}
                           </div>
                         ) : quizList.length === 0 ? (
                           <div className="p-8 text-center text-gray-500 font-Pretendard">

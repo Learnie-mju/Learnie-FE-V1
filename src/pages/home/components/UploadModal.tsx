@@ -191,11 +191,11 @@ const UploadModal = ({
               <div className="border-t border-gray-200 bg-white">
                 {isLoadingFolders ? (
                   <div className="px-4 py-3 text-sm text-gray-400 text-center">
-                    로딩 중...
+                    {t.loading}
                   </div>
                 ) : folders.length === 0 ? (
                   <div className="px-4 py-3 text-sm text-gray-400 text-center">
-                    폴더가 없습니다
+                    {translations[language].home.folder.noFolders}
                   </div>
                 ) : (
                   <div className="max-h-48 overflow-y-auto">
@@ -242,7 +242,7 @@ const UploadModal = ({
                   className="w-full text-left px-4 py-3 border-t border-gray-200 hover:bg-gray-50 transition-colors flex items-center gap-2 text-primary font-Pretendard text-sm"
                 >
                   <span className="text-xl font-medium">+</span>
-                  <span>강의폴더 추가</span>
+                  <span>{t.addFolder}</span>
                 </button>
               </div>
             )}

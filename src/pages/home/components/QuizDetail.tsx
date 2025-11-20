@@ -151,13 +151,13 @@ const QuizDetail = () => {
                   </svg>
                 </button>
                 <h2 className="text-xl font-Pretendard font-semibold text-gray-900">
-                  Translation
+                  {t.content.translation}
                 </h2>
               </div>
 
               <div className="mb-4">
                 <h3 className="text-lg font-Pretendard font-semibold text-gray-900 mb-2">
-                  {lectureData?.title || "수업 제목"}
+                  {lectureData?.title || t.content.summary}
                 </h3>
               </div>
 
@@ -286,11 +286,11 @@ const QuizDetail = () => {
                   {/* 로딩 상태 */}
                   {isLoading ? (
                     <div className="p-8 text-center text-gray-500 font-Pretendard">
-                      퀴즈를 불러오는 중...
+                      {t.content.loadingQuiz}
                     </div>
                   ) : quizDetails.length === 0 ? (
                     <div className="p-8 text-center text-gray-500 font-Pretendard">
-                      퀴즈 문제가 없습니다.
+                      {t.content.noQuizProblems}
                     </div>
                   ) : (
                     /* 퀴즈 목록 테이블 */

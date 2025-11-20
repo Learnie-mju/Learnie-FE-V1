@@ -230,7 +230,7 @@ const HomePage = () => {
             <div className="absolute inset-0 z-50 flex items-center justify-center">
               <div className="relative z-10 animate-bounce">
                 <div className="text-3xl font-Pretendard font-bold text-green-500 text-center animate-pulse">
-                  수업 내용의 번역이 완료되었어요!
+                  {t.translationComplete}
                 </div>
               </div>
             </div>
@@ -249,7 +249,7 @@ const HomePage = () => {
               <div className="max-w-6xl mx-auto">
                 <div className="mb-6 flex items-center justify-between">
                   <h2 className="text-2xl font-Pretendard font-semibold text-gray-900">
-                    {selectedFolderName || "강의 목록"}
+                    {selectedFolderName || t.lectureList}
                   </h2>
                   <button
                     onClick={() => setSelectedFolderId(null)}
@@ -262,19 +262,19 @@ const HomePage = () => {
                 {isLoadingLectures ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="text-gray-500 font-Pretendard">
-                      로딩 중...
+                      {t.loading}
                     </div>
                   </div>
                 ) : lectures.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <p className="text-gray-500 font-Pretendard mb-4">
-                      이 폴더에 강의가 없습니다.
+                      {t.noLecturesInFolder}
                     </p>
                     <button
                       onClick={() => setIsModalOpen(true)}
                       className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
                     >
-                      강의 업로드
+                      {t.uploadLecture}
                     </button>
                   </div>
                 ) : (

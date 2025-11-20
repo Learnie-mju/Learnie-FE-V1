@@ -91,6 +91,11 @@ export const translations = {
       welcomeMessage: "홍길동 교수님을 도와드릴 AI Tutor예요",
       homeTitle: "홈",
       uploadFile: "파일 업로드",
+      lectureList: "강의 목록",
+      noLecturesInFolder: "이 폴더에 강의가 없습니다.",
+      uploadLecture: "강의 업로드",
+      translationComplete: "수업 내용의 번역이 완료되었어요!",
+      loading: "로딩 중...",
       emptyState: {
         title: "강의 영상을 업로드해보세요",
         description:
@@ -122,6 +127,9 @@ export const translations = {
         createQuiz: "퀴즈 생성",
         noQuizzes: "생성된 퀴즈가 없습니다.",
         quizGenerationComplete: "퀴즈 생성 완료",
+        loadingQuiz: "퀴즈를 불러오는 중...",
+        noQuizProblems: "퀴즈 문제가 없습니다.",
+        failedToLoadLectureInfo: "강의 정보를 불러올 수 없습니다.",
         select: "선택",
         problem: "문제",
         answer: "답",
@@ -163,6 +171,8 @@ export const translations = {
         cancel: "취소",
         confirm: "확인",
         selectFolder: "강의 폴더를 선택해 주세요",
+        addFolder: "강의폴더 추가",
+        loading: "로딩 중...",
       },
       uploadArea: {
         title: "파일을 첨부해 주세요!",
@@ -232,6 +242,11 @@ export const translations = {
         cancel: "취소",
         confirm: "삭제",
       },
+    },
+    tips: {
+      index: "목차",
+      failedToLoadTips: "Tips 데이터를 불러올 수 없습니다.",
+      refresh: "새로고침",
     },
     toast: {
       invalidLectureId: "잘못된 강의 ID입니다.",
@@ -315,6 +330,11 @@ export const translations = {
       welcomeMessage: "I am an AI Tutor to help Professor Hong Gil-dong",
       homeTitle: "Home",
       uploadFile: "Upload File",
+      lectureList: "Lecture List",
+      noLecturesInFolder: "No lectures in this folder.",
+      uploadLecture: "Upload Lecture",
+      translationComplete: "Translation completed!",
+      loading: "Loading...",
       emptyState: {
         title: "Upload your lecture video",
         description:
@@ -347,6 +367,9 @@ export const translations = {
         createQuiz: "Create Quiz",
         noQuizzes: "No quizzes have been created.",
         quizGenerationComplete: "Quiz Generation Complete",
+        loadingQuiz: "Loading quiz...",
+        noQuizProblems: "No quiz problems.",
+        failedToLoadLectureInfo: "Unable to load lecture information.",
         select: "Select",
         problem: "Problem",
         answer: "Answer",
@@ -387,6 +410,8 @@ export const translations = {
         cancel: "Cancel",
         confirm: "Confirm",
         selectFolder: "Please select a lecture folder",
+        addFolder: "Add Lecture Folder",
+        loading: "Loading...",
       },
       uploadArea: {
         title: "Please attach a file!",
@@ -423,6 +448,11 @@ export const translations = {
         cancel: "Cancel",
         confirm: "Delete",
       },
+    },
+    tips: {
+      index: "Index",
+      failedToLoadTips: "Unable to load Tips data.",
+      refresh: "Refresh",
     },
     toast: {
       invalidLectureId: "Invalid lecture ID.",
@@ -510,6 +540,11 @@ export const translations = {
       welcomeMessage: "我是帮助洪吉童教授的AI Tutor",
       homeTitle: "首页",
       uploadFile: "上传文件",
+      lectureList: "讲座列表",
+      noLecturesInFolder: "此文件夹中没有讲座。",
+      uploadLecture: "上传讲座",
+      translationComplete: "翻译完成！",
+      loading: "加载中...",
       emptyState: {
         title: "上传您的讲座视频",
         description: "拖放文件或点击上传您的讲座视频！",
@@ -540,6 +575,9 @@ export const translations = {
         createQuiz: "创建测验",
         noQuizzes: "尚未创建测验。",
         quizGenerationComplete: "测验生成完成",
+        loadingQuiz: "正在加载测验...",
+        noQuizProblems: "没有测验问题。",
+        failedToLoadLectureInfo: "无法加载讲座信息。",
         select: "选择",
         problem: "问题",
         answer: "答案",
@@ -579,6 +617,8 @@ export const translations = {
         cancel: "取消",
         confirm: "确认",
         selectFolder: "请选择讲座文件夹",
+        addFolder: "添加讲座文件夹",
+        loading: "加载中...",
       },
       uploadArea: {
         title: "请附加文件！",
@@ -612,6 +652,11 @@ export const translations = {
         cancel: "取消",
         confirm: "删除",
       },
+    },
+    tips: {
+      index: "目录",
+      failedToLoadTips: "无法加载Tips数据。",
+      refresh: "刷新",
     },
     toast: {
       invalidLectureId: "无效的讲座ID。",
@@ -699,6 +744,11 @@ export const translations = {
       welcomeMessage: "洪吉童教授をお手伝いするAI Tutorです",
       homeTitle: "ホーム",
       uploadFile: "ファイルをアップロード",
+      lectureList: "講義リスト",
+      noLecturesInFolder: "このフォルダに講義がありません。",
+      uploadLecture: "講義をアップロード",
+      translationComplete: "翻訳が完了しました！",
+      loading: "読み込み中...",
       emptyState: {
         title: "講義動画をアップロードしてください",
         description:
@@ -730,6 +780,9 @@ export const translations = {
         createQuiz: "クイズ作成",
         noQuizzes: "作成されたクイズがありません。",
         quizGenerationComplete: "クイズ生成完了",
+        loadingQuiz: "クイズを読み込んでいます...",
+        noQuizProblems: "クイズ問題がありません。",
+        failedToLoadLectureInfo: "講義情報を読み込めません。",
         select: "選択",
         problem: "問題",
         answer: "答え",
@@ -769,6 +822,8 @@ export const translations = {
         cancel: "キャンセル",
         confirm: "確認",
         selectFolder: "講義フォルダを選択してください",
+        addFolder: "講義フォルダを追加",
+        loading: "読み込み中...",
       },
       uploadArea: {
         title: "ファイルを添付してください！",
@@ -805,6 +860,11 @@ export const translations = {
         cancel: "キャンセル",
         confirm: "削除",
       },
+    },
+    tips: {
+      index: "目次",
+      failedToLoadTips: "Tipsデータを読み込めません。",
+      refresh: "更新",
     },
     toast: {
       invalidLectureId: "無効な講義IDです。",
@@ -893,6 +953,11 @@ export const translations = {
       welcomeMessage: "Tôi là AI Tutor để giúp Giáo sư Hong Gil-dong",
       homeTitle: "Trang chủ",
       uploadFile: "Tải lên tệp",
+      lectureList: "Danh sách bài giảng",
+      noLecturesInFolder: "Không có bài giảng trong thư mục này.",
+      uploadLecture: "Tải lên bài giảng",
+      translationComplete: "Bản dịch đã hoàn thành!",
+      loading: "Đang tải...",
       emptyState: {
         title: "Tải lên video bài giảng của bạn",
         description:
@@ -924,6 +989,9 @@ export const translations = {
         createQuiz: "Tạo câu đố",
         noQuizzes: "Chưa có câu đố nào được tạo.",
         quizGenerationComplete: "Hoàn thành tạo câu đố",
+        loadingQuiz: "Đang tải câu đố...",
+        noQuizProblems: "Không có câu hỏi câu đố.",
+        failedToLoadLectureInfo: "Không thể tải thông tin bài giảng.",
         select: "Chọn",
         problem: "Câu hỏi",
         answer: "Đáp án",
@@ -964,6 +1032,8 @@ export const translations = {
         cancel: "Hủy",
         confirm: "Xác nhận",
         selectFolder: "Vui lòng chọn thư mục bài giảng",
+        addFolder: "Thêm thư mục bài giảng",
+        loading: "Đang tải...",
       },
       uploadArea: {
         title: "Vui lòng đính kèm tệp!",
@@ -1000,6 +1070,11 @@ export const translations = {
         cancel: "Hủy",
         confirm: "Xóa",
       },
+    },
+    tips: {
+      index: "Mục lục",
+      failedToLoadTips: "Không thể tải dữ liệu Tips.",
+      refresh: "Làm mới",
     },
     toast: {
       invalidLectureId: "ID bài giảng không hợp lệ.",

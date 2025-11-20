@@ -250,7 +250,9 @@ const TipsPage = () => {
       <div className="flex h-screen bg-white overflow-hidden">
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="text-gray-500 font-Pretendard">로딩 중...</div>
+          <div className="text-gray-500 font-Pretendard">
+            {translations[language].home.loading}
+          </div>
         </div>
       </div>
     );
@@ -264,13 +266,13 @@ const TipsPage = () => {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="text-gray-500 font-Pretendard mb-2">
-              Tips 데이터를 불러올 수 없습니다.
+              {translations[language].tips.failedToLoadTips}
             </div>
             <button
               onClick={() => window.location.reload()}
               className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
             >
-              새로고침
+              {translations[language].tips.refresh}
             </button>
           </div>
         </div>
@@ -288,7 +290,7 @@ const TipsPage = () => {
         <div className="w-64 bg-gray-50 border-r border-gray-200 overflow-y-auto">
           <div className="p-4">
             <h2 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4 mt-4">
-              Index
+              {translations[language].tips.index}
             </h2>
             <nav className="space-y-2">
               {tips.map((categoryData) => {

@@ -147,7 +147,7 @@ const Sidebar = ({
               <div className="mt-2 ml-8">
                 {isLoadingFolders ? (
                   <div className="px-4 py-2 text-sm text-gray-400">
-                    로딩 중...
+                    {t.home.loading}
                   </div>
                 ) : folders.length === 0 ? (
                   <div className="px-4 py-2 text-sm text-gray-400">
