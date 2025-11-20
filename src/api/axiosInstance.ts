@@ -1,6 +1,8 @@
 import axios from "axios";
 
 // API Base URL - 환경 변수에서 가져오거나 기본값 사용
+// Vercel 환경 변수에 VITE_API_BASE_URL을 설정하면 해당 값 사용
+// HTTPS가 열리면 Vercel 환경 변수에 https://13.125.45.190:8080 (또는 실제 HTTPS URL) 설정
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://13.125.45.190:8080";
 
