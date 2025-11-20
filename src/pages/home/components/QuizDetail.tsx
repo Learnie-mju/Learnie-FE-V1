@@ -314,9 +314,33 @@ const QuizDetail = () => {
                         <tbody>
                           {quizDetails.map((quiz, index) => {
                             const quizId = quiz?.quizId || index;
-                            const problem = quiz?.statement || "";
-                            // answer 속성을 명시적으로 확인 (서버 응답 구조에 맞춤, anwser 오타도 처리)
-                            const answer = quiz?.answer || quiz?.anwser || "";
+                            // statement (OX) 또는 question (단답형/객관식) 필드 지원
+                            const problem =
+                              quiz?.question || quiz?.statement || "";
+                            // answer 속성을 명시적으로 확인 (서버 응답 구조에 맞춤)
+                            // 객관식: correct 필드 사용, 단답형: answer 필드 사용, OX: answer 필드 사용
+                            let answer = "";
+                            if (quizType === "multiple") {
+                              // 객관식의 경우 correct 필드와 해당 옵션 사용
+                              const correct = quiz?.correct || "";
+                              let correctOption = "";
+                              if (correct === "A")
+                                correctOption = quiz?.optionA || "";
+                              else if (correct === "B")
+                                correctOption = quiz?.optionB || "";
+                              else if (correct === "C")
+                                correctOption = quiz?.optionC || "";
+                              else if (correct === "D")
+                                correctOption = quiz?.optionD || "";
+                              else if (correct === "E")
+                                correctOption = quiz?.optionE || "";
+                              answer = correctOption
+                                ? `${correct}. ${correctOption}`
+                                : correct || "";
+                            } else {
+                              // 단답형, OX의 경우 answer 또는 anwser 필드 사용
+                              answer = quiz?.answer || quiz?.anwser || "";
+                            }
                             const questionType =
                               quiz?.questionType || quizType || "";
 
@@ -341,7 +365,79 @@ const QuizDetail = () => {
                                   {problem || "-"}
                                 </td>
                                 <td className="px-4 py-3">
-                                  {visibleAnswers.includes(quizId) ? (
+                                  {quizType === "multiple" ? (
+                                    // 객관식의 경우 항상 선택지 표시, 답 보기 누르면 정답 강조
+                                    <div className="flex flex-col gap-2">
+                                      <div className="flex flex-col gap-1">
+                                        {[
+                                          {
+                                            num: 1,
+                                            option: quiz?.optionA,
+                                            letter: "A",
+                                          },
+                                          {
+                                            num: 2,
+                                            option: quiz?.optionB,
+                                            letter: "B",
+                                          },
+                                          {
+                                            num: 3,
+                                            option: quiz?.optionC,
+                                            letter: "C",
+                                          },
+                                          {
+                                            num: 4,
+                                            option: quiz?.optionD,
+                                            letter: "D",
+                                          },
+                                          {
+                                            num: 5,
+                                            option: quiz?.optionE,
+                                            letter: "E",
+                                          },
+                                        ]
+                                          .filter((item) => item.option) // 옵션이 있는 것만 표시
+                                          .map((item) => {
+                                            const isCorrect =
+                                              quiz?.correct === item.letter;
+                                            const showAnswer =
+                                              visibleAnswers.includes(quizId);
+                                            return (
+                                              <div
+                                                key={item.num}
+                                                className={`text-sm font-Pretendard ${
+                                                  showAnswer && isCorrect
+                                                    ? "font-semibold text-green-500"
+                                                    : "text-gray-700"
+                                                }`}
+                                              >
+                                                {item.num}. {item.option}
+                                              </div>
+                                            );
+                                          })}
+                                      </div>
+                                      {visibleAnswers.includes(quizId) ? (
+                                        <button
+                                          onClick={() =>
+                                            handleToggleAnswer(quizId)
+                                          }
+                                          className="text-xs text-gray-500 hover:text-gray-700 font-Pretendard self-start"
+                                        >
+                                          {t.content.hideAnswer}
+                                        </button>
+                                      ) : (
+                                        <button
+                                          onClick={() =>
+                                            handleToggleAnswer(quizId)
+                                          }
+                                          className="px-3 py-1.5 text-sm font-Pretendard text-primary border border-primary rounded hover:bg-primary/5 transition-colors"
+                                        >
+                                          {t.content.showAnswer}
+                                        </button>
+                                      )}
+                                    </div>
+                                  ) : visibleAnswers.includes(quizId) ? (
+                                    // 단답형, OX의 경우 기존 방식 유지
                                     <div className="flex flex-col gap-2">
                                       <div
                                         className={`text-sm font-Pretendard font-semibold ${

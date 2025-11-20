@@ -517,7 +517,7 @@ const ContentDetail = () => {
                           </div>
                         ) : quizList.length === 0 ? (
                           <div className="p-8 text-center text-gray-500 font-Pretendard">
-                            생성된 퀴즈가 없습니다.
+                            {t.content.noQuizzes}
                           </div>
                         ) : (
                           <table className="w-full border-collapse">
