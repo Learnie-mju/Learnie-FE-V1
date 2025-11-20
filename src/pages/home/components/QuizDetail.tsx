@@ -208,7 +208,7 @@ const QuizDetail = () => {
                       : "border-gray-300 text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  리뷰
+                  {t.content.advanced}
                 </button>
               </div>
 
@@ -349,17 +349,17 @@ const QuizDetail = () => {
               {activeTab === "review" && (
                 <div>
                   <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
-                    리뷰
+                    {t.content.advanced}
                   </h2>
                   <div className="text-gray-700 font-Pretendard leading-relaxed whitespace-pre-wrap">
                     {lectureData ? (
                       <div className="leading-relaxed">
                         <p className="text-gray-500 italic">
-                          리뷰 기능은 강의 상세 페이지에서 생성할 수 있습니다.
+                          {t.content.review.createInDetailPage}
                         </p>
                       </div>
                     ) : (
-                      <p>강의 리뷰가 여기에 표시됩니다.</p>
+                      <p>{t.content.advancedContent}</p>
                     )}
                   </div>
                 </div>

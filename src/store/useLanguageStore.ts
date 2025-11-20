@@ -106,7 +106,7 @@ export const translations = {
         translation: "번역본",
         summary: "요약",
         quiz: "퀴즈",
-        advanced: "Review",
+        advanced: "리뷰",
         number: "번호",
         back: "뒤로가기",
         summaryContent: "강의 녹음본에 대한 요약본이 여기에 표시됩니다.",
@@ -143,6 +143,16 @@ export const translations = {
           reviewing: "최종 검토 중입니다...",
           waitMessage:
             "잠시만 기다려주세요. AI가 최적의 문제를 생성하고 있습니다.",
+        },
+        review: {
+          create: "리뷰 생성",
+          creating: "리뷰 생성 중...",
+          generating: "리뷰를 생성하는 중...",
+          success: "리뷰가 생성되었습니다!",
+          error: "리뷰 생성에 실패했습니다.",
+          noLectureData: "강의 정보를 불러올 수 없습니다.",
+          createInDetailPage:
+            "리뷰 기능은 강의 상세 페이지에서 생성할 수 있습니다.",
         },
       },
       uploadModal: {
@@ -284,6 +294,16 @@ export const translations = {
           reviewing: "Final review in progress...",
           waitMessage: "Please wait. AI is generating optimal questions.",
         },
+        review: {
+          create: "Create Review",
+          creating: "Creating Review...",
+          generating: "Generating review...",
+          success: "Review has been created!",
+          error: "Failed to create review.",
+          noLectureData: "Unable to load lecture information.",
+          createInDetailPage:
+            "Review feature can be created in the lecture detail page.",
+        },
       },
       uploadModal: {
         fileInfo: "File Information",
@@ -386,7 +406,7 @@ export const translations = {
         translation: "翻译本",
         summary: "摘要",
         quiz: "测验",
-        advanced: "Review",
+        advanced: "评论",
         number: "编号",
         back: "返回",
         summaryContent: "讲座录音的摘要将显示在这里。",
@@ -422,6 +442,15 @@ export const translations = {
           adjusting: "正在调整难度...",
           reviewing: "正在进行最终审查...",
           waitMessage: "请稍候。AI正在生成最佳问题。",
+        },
+        review: {
+          create: "创建评论",
+          creating: "正在创建评论...",
+          generating: "正在生成评论...",
+          success: "评论已创建！",
+          error: "创建评论失败。",
+          noLectureData: "无法加载讲座信息。",
+          createInDetailPage: "评论功能可以在讲座详情页面中创建。",
         },
       },
       uploadModal: {
@@ -523,7 +552,7 @@ export const translations = {
         translation: "翻訳版",
         summary: "要約",
         quiz: "クイズ",
-        advanced: "Review",
+        advanced: "レビュー",
         number: "番号",
         back: "戻る",
         summaryContent: "講義録音の要約がここに表示されます。",
@@ -559,6 +588,15 @@ export const translations = {
           adjusting: "難易度を調整しています...",
           reviewing: "最終確認中です...",
           waitMessage: "少々お待ちください。AIが最適な問題を生成しています。",
+        },
+        review: {
+          create: "レビュー作成",
+          creating: "レビュー作成中...",
+          generating: "レビューを生成しています...",
+          success: "レビューが作成されました！",
+          error: "レビューの作成に失敗しました。",
+          noLectureData: "講義情報を読み込めません。",
+          createInDetailPage: "レビュー機能は講義詳細ページで作成できます。",
         },
       },
       uploadModal: {
@@ -663,7 +701,7 @@ export const translations = {
         translation: "Bản dịch",
         summary: "Tóm tắt",
         quiz: "Câu đố",
-        advanced: "Review",
+        advanced: "Đánh giá",
         number: "Số",
         back: "Quay lại",
         summaryContent: "Tóm tắt của bản ghi bài giảng sẽ được hiển thị ở đây.",
@@ -699,6 +737,16 @@ export const translations = {
           adjusting: "Đang điều chỉnh độ khó...",
           reviewing: "Đang xem xét cuối cùng...",
           waitMessage: "Vui lòng đợi. AI đang tạo các câu hỏi tối ưu.",
+        },
+        review: {
+          create: "Tạo đánh giá",
+          creating: "Đang tạo đánh giá...",
+          generating: "Đang tạo đánh giá...",
+          success: "Đánh giá đã được tạo!",
+          error: "Không thể tạo đánh giá.",
+          noLectureData: "Không thể tải thông tin bài giảng.",
+          createInDetailPage:
+            "Tính năng đánh giá có thể được tạo trong trang chi tiết bài giảng.",
         },
       },
       uploadModal: {

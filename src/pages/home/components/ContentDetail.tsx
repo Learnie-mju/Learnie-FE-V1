@@ -608,7 +608,7 @@ const ContentDetail = () => {
                         <button
                           onClick={async () => {
                             if (!lectureData?.lectureId) {
-                              toast.error("강의 정보를 불러올 수 없습니다.");
+                              toast.error(t.content.review?.noLectureData || "강의 정보를 불러올 수 없습니다.");
                               return;
                             }
 
@@ -628,10 +628,10 @@ const ContentDetail = () => {
 
                               console.log("[ContentDetail] 생성된 리뷰:", createdReview);
                               setReview(createdReview);
-                              toast.success("리뷰가 생성되었습니다!");
+                              toast.success(t.content.review?.success || "리뷰가 생성되었습니다!");
                             } catch (error) {
                               console.error("[ContentDetail] 리뷰 생성 실패:", error);
-                              toast.error("리뷰 생성에 실패했습니다.");
+                              toast.error(t.content.review?.error || "리뷰 생성에 실패했습니다.");
                             } finally {
                               setIsGeneratingReview(false);
                             }
@@ -639,7 +639,9 @@ const ContentDetail = () => {
                           disabled={!lectureData?.lectureId || isGeneratingReview}
                           className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {isGeneratingReview ? "리뷰 생성 중..." : "리뷰 생성"}
+                          {isGeneratingReview 
+                            ? (t.content.review?.creating || "리뷰 생성 중...") 
+                            : (t.content.review?.create || "리뷰 생성")}
                         </button>
                       )}
                     </div>
@@ -647,13 +649,13 @@ const ContentDetail = () => {
                     {/* 리뷰 생성 중 */}
                     {isGeneratingReview && (
                       <div className="p-8 text-center text-gray-500 font-Pretendard">
-                        리뷰를 생성하는 중...
+                        {t.content.review?.generating || "리뷰를 생성하는 중..."}
                       </div>
                     )}
 
                     {/* 생성된 리뷰 표시 */}
                     {review && !isGeneratingReview && (
-                      <div className="text-gray-700 font-Pretendard leading-relaxed whitespace-pre-wrap">
+                      <div className="text-gray-700 font-Pretendard leading-relaxed">
                         {review.title && (
                           <div className="mb-4">
                             <h3 className="text-lg font-Pretendard font-semibold text-gray-900">
@@ -662,8 +664,8 @@ const ContentDetail = () => {
                           </div>
                         )}
                         {review.review && (
-                          <div className="leading-relaxed">
-                            {review.review}
+                          <div className="prose prose-sm max-w-none">
+                            <ReactMarkdown>{review.review}</ReactMarkdown>
                           </div>
                         )}
                       </div>
