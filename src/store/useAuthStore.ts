@@ -17,12 +17,12 @@ interface AuthState {
   error: string | null;
 
   signup: (
-    userid: string,
-    username: string,
-    password: string,
-    language: Language
+    _userid: string,
+    _username: string,
+    _password: string,
+    _language: Language
   ) => Promise<void>;
-  login: (userid: string, password: string) => Promise<void>;
+  login: (_userid: string, _password: string) => Promise<void>;
   logout: () => void;
 }
 

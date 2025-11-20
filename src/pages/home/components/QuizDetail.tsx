@@ -20,8 +20,7 @@ const mockQuizDetails = [
 ];
 
 const QuizDetail = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  useParams<{ id: string }>(); // id는 현재 사용하지 않지만 라우팅에 필요
+  const { id: _id } = useParams<{ id: string }>(); // 라우팅에 필요
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].home;

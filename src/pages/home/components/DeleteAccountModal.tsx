@@ -21,10 +21,10 @@ const DeleteAccountModal = ({
       <div className="bg-white rounded-lg p-8 w-full max-w-md shadow-xl">
         <div className="mb-6">
           <h3 className="text-xl font-Pretendard font-semibold text-gray-900 mb-2">
-            {t.deleteAccount.title}
+            {t.deleteAccountModal.title}
           </h3>
           <p className="text-gray-600 font-Pretendard text-sm">
-            {t.deleteAccount.message}
+            {t.deleteAccountModal.message}
           </p>
         </div>
 
@@ -33,13 +33,13 @@ const DeleteAccountModal = ({
             onClick={onClose}
             className="px-6 py-2.5 bg-white border border-gray-300 rounded-lg text-gray-700 font-Pretendard font-medium hover:bg-gray-50 transition-colors"
           >
-            {t.deleteAccount.cancel}
+            {t.deleteAccountModal.cancel}
           </button>
           <button
             onClick={onConfirm}
             className="px-6 py-2.5 bg-red-600 text-white rounded-lg font-Pretendard font-medium hover:bg-red-700 transition-colors"
           >
-            {t.deleteAccount.confirm}
+            {t.deleteAccountModal.confirm}
           </button>
         </div>
       </div>

@@ -53,7 +53,7 @@ const UserMenu = () => {
 
   const handleEditProfile = () => {
     // TODO: 회원 수정 모달 또는 페이지로 이동
-    toast.info("회원 수정 기능은 준비 중입니다.");
+    toast.success("회원 수정 기능은 준비 중입니다.");
     setIsOpen(false);
   };
 
