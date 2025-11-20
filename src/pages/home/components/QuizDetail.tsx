@@ -20,6 +20,7 @@ const mockQuizDetails = [
 ];
 
 const QuizDetail = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   useParams<{ id: string }>(); // id는 현재 사용하지 않지만 라우팅에 필요
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -168,26 +169,31 @@ const QuizDetail = () => {
 
               {/* 퀴즈 목록 테이블 */}
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
-                <table className="w-full">
+                <table className="w-full border-collapse">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase w-16">
+                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase w-16 border-b border-gray-200">
                         {t.content.select}
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                         {t.content.problem}
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                         {t.content.answer}
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                         {t.content.questionType}
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {mockQuizDetails.map((quiz) => (
-                      <tr key={quiz.id} className="hover:bg-gray-50">
+                  <tbody>
+                    {mockQuizDetails.map((quiz, index) => (
+                      <tr 
+                        key={quiz.id} 
+                        className={`hover:bg-gray-50 ${
+                          index !== mockQuizDetails.length - 1 ? "border-b border-gray-200" : ""
+                        }`}
+                      >
                         <td className="px-4 py-3">
                           <input
                             type="checkbox"

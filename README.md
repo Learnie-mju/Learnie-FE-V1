@@ -1,6 +1,39 @@
-# React + TypeScript + Vite
+# Orbit AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Orbit AI - AI-powered lecture translation and learning platform
+
+Built with React + TypeScript + Vite
+
+## API 설정
+
+### 환경 변수 설정
+
+프로젝트 루트에 `.env` 파일을 생성하고 다음을 추가하세요:
+
+```env
+# 개발 환경
+VITE_API_BASE_URL=http://localhost:8080/api
+
+# 프로덕션 환경 (AWS EC2)
+VITE_API_BASE_URL=https://your-ec2-domain.com/api
+```
+
+### API 구조
+
+- `src/api/axiosInstance.ts` - Axios 인스턴스 설정 (토큰 자동 추가, 에러 처리)
+- `src/api/auth.ts` - 인증 관련 API 함수들
+- `src/store/useAuthStore.ts` - Zustand 스토어 (API 호출)
+
+### 사용 방법
+
+환경 변수가 설정되어 있으면 실제 API를 호출하고, 없으면 Mock 데이터를 사용합니다.
+
+```typescript
+// API 호출 예시
+import { loginAPI } from "./api/auth";
+
+const response = await loginAPI({ email, password });
+```
 
 Currently, two official plugins are available:
 

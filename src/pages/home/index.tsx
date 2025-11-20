@@ -41,6 +41,12 @@ const HomePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "advanced">("summary");
+  
+  // 퀴즈 생성 설정 상태
+  const [showQuizCreateForm, setShowQuizCreateForm] = useState(false);
+  const [questionCount, setQuestionCount] = useState<number>(5);
+  const [difficulty, setDifficulty] = useState<"high" | "medium" | "low" | null>(null);
+  const [questionType, setQuestionType] = useState<"shortAnswer" | "trueFalse" | "multipleChoice" | null>(null);
 
   // TODO: UI 작업 완료 후 활성화
   // 로그인되지 않은 상태면 로그인 페이지로 redirect
@@ -62,7 +68,7 @@ const HomePage = () => {
       {/* 메인 콘텐츠 */}
       <div className="flex-1 flex flex-col overflow-hidden bg-white relative">
         {/* 헤더 */}
-        <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
+        <header className="bg-white px-8 py-4 flex items-center justify-between">
           {/* 뒤로가기 버튼 */}
           <button className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
             <svg
@@ -178,43 +184,162 @@ const HomePage = () => {
                         {t.content.quiz}
                       </h2>
                       <button
-                        onClick={() => {
-                          // TODO: 퀴즈 생성 로직
-                          console.log("퀴즈 생성");
-                        }}
+                        onClick={() => setShowQuizCreateForm(!showQuizCreateForm)}
                         className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
                       >
                         {t.content.createQuiz}
                       </button>
                     </div>
+
+                    {/* 퀴즈 생성 설정 폼 */}
+                    {showQuizCreateForm && (
+                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                        <h3 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4">
+                          {t.content.quiz}
+                        </h3>
+                        
+                        {/* 문제 개수 */}
+                        <div className="mb-4">
+                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
+                            {t.content.questionCount}
+                          </label>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="number"
+                              min="1"
+                              max="10"
+                              value={questionCount}
+                              onChange={(e) => setQuestionCount(Number(e.target.value))}
+                              className="px-3 py-2 border border-gray-300 rounded text-sm font-Pretendard w-20 focus:outline-none focus:ring-2 focus:ring-primary"
+                            />
+                            <span className="text-sm text-gray-600">
+                              {t.content.questions} ({t.content.maxQuestions} 10{t.content.questions})
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 난이도 */}
+                        <div className="mb-4">
+                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
+                            {t.content.difficulty}
+                          </label>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setDifficulty(difficulty === "high" ? null : "high")}
+                              className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
+                                difficulty === "high"
+                                  ? "bg-gray-800 text-white border-gray-800"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {t.content.difficultyHigh}
+                            </button>
+                            <button
+                              onClick={() => setDifficulty(difficulty === "medium" ? null : "medium")}
+                              className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
+                                difficulty === "medium"
+                                  ? "bg-gray-800 text-white border-gray-800"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {t.content.difficultyMedium}
+                            </button>
+                            <button
+                              onClick={() => setDifficulty(difficulty === "low" ? null : "low")}
+                              className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
+                                difficulty === "low"
+                                  ? "bg-gray-800 text-white border-gray-800"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {t.content.difficultyLow}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* 문제 유형 */}
+                        <div className="mb-6">
+                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
+                            {t.content.questionType}
+                          </label>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => setQuestionType(questionType === "shortAnswer" ? null : "shortAnswer")}
+                              className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
+                                questionType === "shortAnswer"
+                                  ? "bg-gray-800 text-white border-gray-800"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {t.content.questionTypeShortAnswer}
+                            </button>
+                            <button
+                              onClick={() => setQuestionType(questionType === "trueFalse" ? null : "trueFalse")}
+                              className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
+                                questionType === "trueFalse"
+                                  ? "bg-gray-800 text-white border-gray-800"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {t.content.questionTypeTrueFalse}
+                            </button>
+                            <button
+                              onClick={() => setQuestionType(questionType === "multipleChoice" ? null : "multipleChoice")}
+                              className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
+                                questionType === "multipleChoice"
+                                  ? "bg-gray-800 text-white border-gray-800"
+                                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+                              }`}
+                            >
+                              {t.content.questionTypeMultipleChoice}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* 문제지 생성 버튼 */}
+                        <button
+                          onClick={() => {
+                            // TODO: 퀴즈 생성 API 호출
+                            console.log("퀴즈 생성:", { questionCount, difficulty, questionType });
+                            setShowQuizCreateForm(false);
+                            // 생성 후 리스트 새로고침
+                          }}
+                          className="w-full px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900"
+                        >
+                          {t.content.generateQuiz}
+                        </button>
+                      </div>
+                    )}
                     
                     {/* 퀴즈 리스트 테이블 */}
                     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                      <table className="w-full">
+                      <table className="w-full border-collapse">
                         <thead className="bg-gray-50">
                           <tr>
-                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                               {t.content.quizNumber}
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                               {t.content.questionCount}
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                               {t.content.difficulty}
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                               {t.content.createdAt}
                             </th>
-                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                               {t.content.download}
                             </th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
-                          {mockQuizzes.map((quiz) => (
+                        <tbody>
+                          {mockQuizzes.map((quiz, index) => (
                             <tr
                               key={quiz.id}
-                              className="hover:bg-gray-50 cursor-pointer transition-colors"
+                              className={`hover:bg-gray-50 cursor-pointer transition-colors ${
+                                index !== mockQuizzes.length - 1 ? "border-b border-gray-200" : ""
+                              }`}
                               onClick={() => navigate(`/home/quiz/${quiz.id}`)}
                             >
                               <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
