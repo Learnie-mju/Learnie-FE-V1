@@ -5,7 +5,7 @@ import { useAuth } from "../../../store/useAuthStore";
 import { useLanguage } from "../../../store/useLanguageStore";
 
 const LoginForm = () => {
-  const { login, status, error, session } = useAuth();
+  const { login, status, error, user } = useAuth();
   const { setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [userid, setUserid] = useState("");
@@ -13,13 +13,13 @@ const LoginForm = () => {
 
   // 로그인 성공 시 사용자 언어 설정 및 홈으로 리다이렉트
   useEffect(() => {
-    if (session?.language) {
-      setLanguage(session.language);
+    if (user?.language) {
+      setLanguage(user.language);
     }
     if (status === "authenticated") {
       navigate("/home", { replace: true });
     }
-  }, [session, status, setLanguage, navigate]);
+  }, [user, status, setLanguage, navigate]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

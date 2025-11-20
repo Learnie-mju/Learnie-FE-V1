@@ -193,16 +193,6 @@ export const useAuth = create<AuthState>((set) => ({
         error: null,
       });
 
-      // 디버깅용 로그
-      if (import.meta.env.DEV) {
-        console.log("로그인 완료 - 설정된 언어:", userLanguage);
-        console.log(
-          "localStorage userLanguage:",
-          localStorage.getItem("userLanguage")
-        );
-        console.log("언어 스토어 현재 값:", useLanguage.getState().language);
-      }
-
       // 성공 토스트 표시
       toast.success("로그인에 성공했습니다!");
     } catch (err) {

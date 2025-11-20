@@ -36,15 +36,15 @@ const ContentDetail = () => {
   const { contentId } = useParams<{ contentId: string }>();
   const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
-  const { session } = useAuth();
+  const { user } = useAuth();
   const t = translations[language].home;
 
-  // 로그인된 경우 세션의 언어를 우선 사용
+  // 로그인된 경우 사용자 정보의 언어를 우선 사용
   useEffect(() => {
-    if (session?.language) {
-      setLanguage(session.language);
+    if (user?.language) {
+      setLanguage(user.language);
     }
-  }, [session, setLanguage]);
+  }, [user, setLanguage]);
 
   const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "advanced">(
     "summary"

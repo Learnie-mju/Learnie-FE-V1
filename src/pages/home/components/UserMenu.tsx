@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import DeleteAccountModal from "./DeleteAccountModal";
 
 const UserMenu = () => {
-  const { session, logout } = useAuth();
+  const { user, logout } = useAuth();
   const { language } = useLanguage();
   const t = translations[language].userMenu;
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const UserMenu = () => {
     setIsOpen(false);
   };
 
-  if (!session) {
+  if (!user) {
     return null;
   }
 
@@ -84,7 +84,7 @@ const UserMenu = () => {
           </svg>
         </div>
         <span className="text-sm font-Pretendard font-medium text-gray-700">
-          {session.username}
+          {user.username}
         </span>
         <svg
           className={`w-4 h-4 text-gray-500 transition-transform ${
@@ -108,10 +108,10 @@ const UserMenu = () => {
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
           <div className="px-4 py-2 border-b border-gray-200">
             <p className="text-sm font-Pretendard font-semibold text-gray-900">
-              {session.username}
+              {user.username}
             </p>
             <p className="text-xs text-gray-500 font-Pretendard">
-              {session.userId}
+              {user.userId}
             </p>
           </div>
           
