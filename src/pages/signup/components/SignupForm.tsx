@@ -1,15 +1,31 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage, translations } from "../../../store/useLanguageStore";
+import {
+  useLanguage,
+  translations,
+  type Language,
+} from "../../../store/useLanguageStore";
+import { useAuth } from "../../../store/useAuthStore";
+
+const LANGUAGE_OPTIONS: { code: Language; label: string }[] = [
+  { code: "ko", label: "한국어" },
+  { code: "en", label: "English" },
+  { code: "zh", label: "中文" },
+  { code: "ja", label: "日本語" },
+  { code: "vi", label: "Tiếng Việt" },
+  { code: "mn", label: "Монгол" },
+];
 
 const SignupForm = () => {
   const { language } = useLanguage();
+  const { signup } = useAuth();
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [userid, setUserid] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(language);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,8 +36,8 @@ const SignupForm = () => {
     setError("");
 
     if (
-      !name.trim() ||
-      !email.trim() ||
+      !userid.trim() ||
+      !username.trim() ||
       !password.trim() ||
       !confirmPassword.trim()
     ) {
@@ -41,14 +57,9 @@ const SignupForm = () => {
 
     setIsLoading(true);
     try {
-      // TODO: 실제 회원가입 API 호출
-      // await signup(name, email, password);
-
-      // 임시로 성공 처리
-      setTimeout(() => {
-        setIsLoading(false);
-        navigate("/login");
-      }, 1000);
+      await signup(userid, username, password, selectedLanguage);
+      setIsLoading(false);
+      navigate("/login");
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : t.errors.signupFailed;
@@ -66,15 +77,15 @@ const SignupForm = () => {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="flex flex-col gap-2">
-            <label htmlFor="name" className="sr-only">
-              {t.name}
+            <label htmlFor="userid" className="sr-only">
+              사용자 ID
             </label>
             <input
-              id="name"
+              id="userid"
               type="text"
-              placeholder={t.namePlaceholder}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="사용자 ID를 입력하세요"
+              value={userid}
+              onChange={(e) => setUserid(e.target.value)}
               disabled={isLoading}
               className="px-5 py-4 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               required
@@ -83,15 +94,15 @@ const SignupForm = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label htmlFor="email" className="sr-only">
-              {t.email}
+            <label htmlFor="username" className="sr-only">
+              {t.name}
             </label>
             <input
-              id="email"
-              type="email"
-              placeholder={t.emailPlaceholder}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder={t.namePlaceholder}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               disabled={isLoading}
               className="px-5 py-4 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               required
@@ -131,6 +142,27 @@ const SignupForm = () => {
               required
               aria-required="true"
             />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="language" className="sr-only">
+              {t.language}
+            </label>
+            <select
+              id="language"
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value as Language)}
+              disabled={isLoading}
+              className="px-5 py-4 rounded-lg bg-white border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              required
+              aria-required="true"
+            >
+              {LANGUAGE_OPTIONS.map((option) => (
+                <option key={option.code} value={option.code}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
 
           {error && (

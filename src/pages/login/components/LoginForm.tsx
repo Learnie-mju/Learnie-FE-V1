@@ -1,13 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../store/useAuthStore";
+import { useLanguage } from "../../../store/useLanguageStore";
 
 const LoginForm = () => {
-  const { login, status, error } = useAuth();
+  const { login, status, error, session } = useAuth();
+  const { setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // 로그인 성공 시 사용자 언어 설정
+  useEffect(() => {
+    if (session?.language) {
+      setLanguage(session.language);
+    }
+  }, [session, setLanguage]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,7 +32,7 @@ const LoginForm = () => {
     <div className="flex flex-col justify-center items-center bg-gray-50 w-full md:w-1/3 border-l border-gray-200">
       <div className="w-full max-w-sm px-8 py-12">
         <h2 className="text-gray-900 font-Pretendard font-semibold text-2xl md:text-3xl mb-10 text-center">
-          LectureLens 시작하기
+          Orbit AI 시작하기
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">

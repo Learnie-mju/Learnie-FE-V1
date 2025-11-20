@@ -13,10 +13,28 @@ const LANGUAGE_OPTIONS = [
   { code: "mn" as const, label: "Монгол" },
 ] as const;
 
+// 임시 퀴즈 데이터
+const mockQuizzes = [
+  {
+    id: 1,
+    number: 1,
+    questionCount: 10,
+    difficulty: "중급",
+    createdAt: "2024-01-15",
+  },
+  {
+    id: 2,
+    number: 2,
+    questionCount: 15,
+    difficulty: "고급",
+    createdAt: "2024-01-16",
+  },
+];
+
 const HomePage = () => {
   // TODO: UI 작업 완료 후 활성화
   // const { status, session } = useAuth();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { language, setLanguage } = useLanguage();
   const t = translations[language].home;
   
@@ -158,25 +176,78 @@ const HomePage = () => {
 
                 {activeTab === "quiz" && (
                   <div>
-                    <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
-                      {t.content.quiz}
-                    </h2>
-                    <div className="mb-4">
-                      <label className="block text-sm font-Pretendard text-gray-700 mb-2">
-                        {t.content.number}
-                      </label>
-                      <input
-                        type="text"
-                        value="1"
-                        readOnly
-                        className="w-full px-4 py-3 rounded-lg bg-primary/10 border border-primary/30 text-gray-900 font-Pretendard"
-                      />
+                    <div className="flex justify-between items-center mb-6">
+                      <h2 className="text-xl font-Pretendard font-semibold text-gray-900">
+                        {t.content.quiz}
+                      </h2>
+                      <button
+                        onClick={() => {
+                          // TODO: 퀴즈 생성 로직
+                          console.log("퀴즈 생성");
+                        }}
+                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
+                      >
+                        {t.content.createQuiz}
+                      </button>
                     </div>
-                    <div className="text-2xl font-Pretendard font-semibold text-gray-900 mb-4">
-                      1
-                    </div>
-                    <div className="text-gray-700 font-Pretendard leading-relaxed">
-                      <p>{t.content.quizContent}</p>
+                    
+                    {/* 퀴즈 리스트 테이블 */}
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                              {t.content.quizNumber}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                              {t.content.questionCount}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                              {t.content.difficulty}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                              {t.content.createdAt}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase">
+                              {t.content.download}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {mockQuizzes.map((quiz) => (
+                            <tr
+                              key={quiz.id}
+                              className="hover:bg-gray-50 cursor-pointer transition-colors"
+                              onClick={() => navigate(`/home/quiz/${quiz.id}`)}
+                            >
+                              <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
+                                {quiz.number}
+                              </td>
+                              <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                {quiz.questionCount}
+                              </td>
+                              <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                {quiz.difficulty}
+                              </td>
+                              <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                {quiz.createdAt}
+                              </td>
+                              <td className="px-4 py-3">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // TODO: 다운로드 로직
+                                    console.log("다운로드", quiz.id);
+                                  }}
+                                  className="text-primary hover:text-primary/80 font-Pretendard text-sm"
+                                >
+                                  {t.content.download}
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 )}

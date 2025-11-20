@@ -7,9 +7,22 @@ interface LanguageState {
   setLanguage: (lang: Language) => void;
 }
 
+// localStorage에서 언어 불러오기
+const getStoredLanguage = (): Language => {
+  if (typeof window === "undefined") return "ko";
+  const stored = localStorage.getItem("userLanguage");
+  if (stored && ["ko", "en", "zh", "ja", "vi", "mn"].includes(stored)) {
+    return stored as Language;
+  }
+  return "ko";
+};
+
 export const useLanguage = create<LanguageState>((set) => ({
-  language: "ko",
-  setLanguage: (lang) => set({ language: lang }),
+  language: getStoredLanguage(),
+  setLanguage: (lang) => {
+    localStorage.setItem("userLanguage", lang);
+    set({ language: lang });
+  },
 }));
 
 // 언어별 텍스트 정의
@@ -19,12 +32,12 @@ export const translations = {
       "1단계 : 알아듣지 못하는 강의를 업로드하세요",
       "2단계 : 모국어로 번역된 수업 요약본을 보고 학습",
       "3단계 : 생성된 문제를 보고 학습해보세요",
-      "4단계 : 해당 수업의 심화를 다룬 내용들도 학습해주세요",
-      "LectureLens와 함께 학습을 해볼까요?",
+      "4단계 : 해당 수업의 심화를 다룬 내용들도 학습해보세요",
+      "Orbit과 함께 학습을 해볼까요?",
     ],
-    title: "LectureLen",
+    title: "Orbit",
     signup: {
-      title: "LectureLens 시작하기",
+      title: "Orbit AI 시작하기",
       name: "이름",
       namePlaceholder: "이름을 입력하세요",
       email: "이메일",
@@ -33,6 +46,8 @@ export const translations = {
       passwordPlaceholder: "비밀번호를 입력하세요",
       confirmPassword: "비밀번호 확인",
       confirmPasswordPlaceholder: "비밀번호를 다시 입력하세요",
+      language: "언어",
+      languagePlaceholder: "언어를 선택하세요",
       signupButton: "회원가입",
       signupLoading: "가입 중...",
       loginLink: "이미 계정이 있으신가요?",
@@ -82,6 +97,8 @@ export const translations = {
         answer: "답",
         questionType: "문제 유형",
         generatePDF: "PDF 생성",
+        showAnswer: "답 보기",
+        hideAnswer: "답 숨기기",
       },
       uploadModal: {
         fileInfo: "파일 정보",
@@ -96,12 +113,12 @@ export const translations = {
       "Step 1: Upload lectures you don't understand",
       "Step 2: Review and learn from the translated lecture summary in your native language",
       "Step 3: Review and learn from the generated problems",
-      "Step 4: Also learn from the advanced content covering the in-depth aspects of the lecture",
-      "Shall we learn together with LectureLens?",
+      "Step 4: Try learning from the advanced content covering the in-depth aspects of the lecture",
+      "Shall we learn together with Orbit?",
     ],
-    title: "LectureLen",
+    title: "Orbit",
     signup: {
-      title: "Get Started with LectureLens",
+      title: "Get Started with Orbit AI",
       name: "Name",
       namePlaceholder: "Enter your name",
       email: "Email",
@@ -110,6 +127,8 @@ export const translations = {
       passwordPlaceholder: "Enter your password",
       confirmPassword: "Confirm Password",
       confirmPasswordPlaceholder: "Re-enter your password",
+      language: "Language",
+      languagePlaceholder: "Select a language",
       signupButton: "Sign Up",
       signupLoading: "Signing up...",
       loginLink: "Already have an account?",
@@ -160,6 +179,8 @@ export const translations = {
         answer: "Answer",
         questionType: "Question Type",
         generatePDF: "Generate PDF",
+        showAnswer: "Show Answer",
+        hideAnswer: "Hide Answer",
       },
       uploadModal: {
         fileInfo: "File Information",
@@ -174,12 +195,12 @@ export const translations = {
       "第1步：上传您听不懂的讲座",
       "第2步：查看并学习用您的母语翻译的课程摘要",
       "第3步：查看并学习生成的问题",
-      "第4步：也请学习涵盖该课程深入内容的进阶内容",
-      "让我们一起与LectureLens一起学习吧？",
+      "第4步：也尝试学习涵盖该课程深入内容的进阶内容",
+      "让我们一起与Orbit一起学习吧？",
     ],
-    title: "LectureLen",
+    title: "Orbit",
     signup: {
-      title: "开始使用LectureLens",
+      title: "开始使用Orbit AI",
       name: "姓名",
       namePlaceholder: "请输入您的姓名",
       email: "电子邮件",
@@ -188,6 +209,8 @@ export const translations = {
       passwordPlaceholder: "请输入您的密码",
       confirmPassword: "确认密码",
       confirmPasswordPlaceholder: "请再次输入您的密码",
+      language: "语言",
+      languagePlaceholder: "选择语言",
       signupButton: "注册",
       signupLoading: "注册中...",
       loginLink: "已有账户？",
@@ -236,6 +259,8 @@ export const translations = {
         answer: "答案",
         questionType: "问题类型",
         generatePDF: "生成PDF",
+        showAnswer: "显示答案",
+        hideAnswer: "隐藏答案",
       },
       uploadModal: {
         fileInfo: "文件信息",
@@ -250,12 +275,12 @@ export const translations = {
       "ステップ1：理解できない講義をアップロードしてください",
       "ステップ2：母国語に翻訳された授業の要約を見て学習してください",
       "ステップ3：生成された問題を見て学習してください",
-      "ステップ4：その授業の深化を扱った内容も学習してください",
-      "LectureLensと一緒に学習してみませんか？",
+      "ステップ4：その授業の深化を扱った内容も学習してみてください",
+      "Orbitと一緒に学習してみませんか？",
     ],
-    title: "LectureLen",
+    title: "Orbit",
     signup: {
-      title: "LectureLensを始める",
+      title: "Orbit AIを始める",
       name: "名前",
       namePlaceholder: "お名前を入力してください",
       email: "メールアドレス",
@@ -264,6 +289,8 @@ export const translations = {
       passwordPlaceholder: "パスワードを入力してください",
       confirmPassword: "パスワード確認",
       confirmPasswordPlaceholder: "パスワードを再度入力してください",
+      language: "言語",
+      languagePlaceholder: "言語を選択してください",
       signupButton: "会員登録",
       signupLoading: "登録中...",
       loginLink: "すでにアカウントをお持ちですか？",
@@ -313,6 +340,8 @@ export const translations = {
         answer: "答え",
         questionType: "問題タイプ",
         generatePDF: "PDF生成",
+        showAnswer: "答えを表示",
+        hideAnswer: "答えを非表示",
       },
       uploadModal: {
         fileInfo: "ファイル情報",
@@ -327,12 +356,12 @@ export const translations = {
       "Bước 1: Tải lên các bài giảng bạn không hiểu",
       "Bước 2: Xem và học từ bản tóm tắt bài giảng được dịch sang ngôn ngữ mẹ đẻ của bạn",
       "Bước 3: Xem và học từ các câu hỏi được tạo ra",
-      "Bước 4: Cũng học từ nội dung nâng cao bao gồm các khía cạnh sâu sắc của bài giảng",
-      "Chúng ta hãy cùng học với LectureLens nhé?",
+      "Bước 4: Hãy thử học từ nội dung nâng cao bao gồm các khía cạnh sâu sắc của bài giảng",
+      "Chúng ta hãy cùng học với Orbit nhé?",
     ],
-    title: "LectureLen",
+    title: "Orbit",
     signup: {
-      title: "Bắt đầu với LectureLens",
+      title: "Bắt đầu với Orbit AI",
       name: "Tên",
       namePlaceholder: "Nhập tên của bạn",
       email: "Email",
@@ -341,6 +370,8 @@ export const translations = {
       passwordPlaceholder: "Nhập mật khẩu của bạn",
       confirmPassword: "Xác nhận mật khẩu",
       confirmPasswordPlaceholder: "Nhập lại mật khẩu của bạn",
+      language: "Ngôn ngữ",
+      languagePlaceholder: "Chọn ngôn ngữ",
       signupButton: "Đăng ký",
       signupLoading: "Đang đăng ký...",
       loginLink: "Đã có tài khoản?",
@@ -390,6 +421,8 @@ export const translations = {
         answer: "Đáp án",
         questionType: "Loại câu hỏi",
         generatePDF: "Tạo PDF",
+        showAnswer: "Hiển thị đáp án",
+        hideAnswer: "Ẩn đáp án",
       },
       uploadModal: {
         fileInfo: "Thông tin tệp",
@@ -405,11 +438,11 @@ export const translations = {
       "2-р алхам: Эх хэлээр орчуулсан хичээлийн хураангуйг харж суралцана",
       "3-р алхам: Үүссэн асуудлуудыг харж суралцана уу",
       "4-р алхам: Хичээлийн гүнзгий талуудыг хамарсан дэвшилтэт агуулгаас ч суралцана уу",
-      "LectureLens-тэй хамт суралцъя уу?",
+      "Orbit-тэй хамт суралцъя уу?",
     ],
-    title: "LectureLen",
+    title: "Orbit",
     signup: {
-      title: "LectureLens-ээр эхлэх",
+      title: "Orbit AI-ээр эхлэх",
       name: "Нэр",
       namePlaceholder: "Нэрээ оруулна уу",
       email: "Имэйл",
@@ -418,6 +451,8 @@ export const translations = {
       passwordPlaceholder: "Нууц үгээ оруулна уу",
       confirmPassword: "Нууц үг баталгаажуулах",
       confirmPasswordPlaceholder: "Нууц үгээ дахин оруулна уу",
+      language: "Хэл",
+      languagePlaceholder: "Хэл сонгох",
       signupButton: "Бүртгүүлэх",
       signupLoading: "Бүртгүүлж байна...",
       loginLink: "Аль хэдийн бүртгэлтэй юу?",
@@ -467,6 +502,8 @@ export const translations = {
         answer: "Хариулт",
         questionType: "Асуултын төрөл",
         generatePDF: "PDF үүсгэх",
+        showAnswer: "Хариулт харуулах",
+        hideAnswer: "Хариулт нуух",
       },
       uploadModal: {
         fileInfo: "Файлын мэдээлэл",

@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
 import { useAuth } from "../../../store/useAuthStore";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const { language } = useLanguage();
   const { logout } = useAuth();
   const t = translations[language];
@@ -19,9 +21,12 @@ const Sidebar = () => {
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
       {/* 로고 */}
       <div className="p-6 border-b border-gray-200">
-        <h1 className="text-xl font-Pretendard font-semibold text-primary">
-          LOGO
-        </h1>
+        <button
+          onClick={() => navigate("/home")}
+          className="text-xl font-Pretendard font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer"
+        >
+          Orbit AI
+        </button>
       </div>
 
       {/* 네비게이션 */}
