@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../../store/useAuthStore';
+import { useAuth } from '../store/useAuthStore';
 
 const LoginCTA = () => {
   const { login, status, error } = useAuth();

@@ -20,7 +20,7 @@ const mockQuizDetails = [
 ];
 
 const QuizDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  useParams<{ id: string }>(); // id는 현재 사용하지 않지만 라우팅에 필요
   const navigate = useNavigate();
   const { language } = useLanguage();
   const t = translations[language].home;

@@ -38,9 +38,6 @@ const HomePage = () => {
   const { language, setLanguage } = useLanguage();
   const t = translations[language].home;
   
-  // 임시로 세션 데이터 사용 (실제로는 useAuth에서 가져옴)
-  const session = { name: "홍길동" };
-  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "advanced">("summary");
