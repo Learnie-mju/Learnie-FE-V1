@@ -42,11 +42,11 @@ export const useLanguage = create<LanguageState>((set) => ({
 export const translations = {
   KR: {
     intro: [
-      "1단계 : 알아듣지 못하는 강의를 업로드하세요",
-      "2단계 : 모국어로 번역된 수업 요약본을 보고 학습해보세요",
-      "3단계 : 생성된 문제를 보고 학습해보세요",
-      "4단계 : 해당 수업의 심화를 다룬 내용들도 학습해보세요",
-      "Orbit과 함께 학습을 해볼까요?",
+      "1. 이해하기 어려운 강의를 업로드하세요.",
+      "2. 수업 내용을 텍스트로 정리해, 모국어로 번역된 요약본으로 학습해보세요.",
+      "3. 자동으로 생성된 문제를 통해 배운 내용을 확인해보세요.",
+      "4. 추가로 제공되는 리뷰 콘텐츠로 내용을 한 번 더 학습해보세요",
+      "Orbit과 함께 학습을 시작해볼까요?",
     ],
     title: "Orbit",
     signup: {
@@ -201,11 +201,11 @@ export const translations = {
   },
   EN: {
     intro: [
-      "Step 1: Upload lectures you don't understand",
-      "Step 2: Review and learn from the translated lecture summary in your native language",
-      "Step 3: Review and learn from the generated problems",
-      "Step 4: Try learning from the advanced content covering the in-depth aspects of the lecture",
-      "Shall we learn together with Orbit?",
+      "1. Upload lectures that are difficult to understand.",
+      "2. Organize the class content into text and learn from summaries translated into your native language.",
+      "3. Check what you've learned through automatically generated questions.",
+      "4. Learn the content once more with additional review content provided.",
+      "Shall we start learning with Orbit?",
     ],
     title: "Orbit",
     signup: {
@@ -361,11 +361,11 @@ export const translations = {
   },
   CN: {
     intro: [
-      "第1步：上传您听不懂的讲座",
-      "第2步：查看并学习用您的母语翻译的课程摘要",
-      "第3步：查看并学习生成的问题",
-      "第4步：也尝试学习涵盖该课程深入内容的进阶内容",
-      "让我们一起与Orbit一起学习吧？",
+      "1. 上传难以理解的讲座。",
+      "2. 将课程内容整理成文本，通过翻译成母语的摘要来学习。",
+      "3. 通过自动生成的问题来确认所学内容。",
+      "4. 通过额外提供的复习内容再次学习。",
+      "让我们与Orbit一起开始学习吧？",
     ],
     title: "Orbit",
     signup: {
@@ -515,11 +515,11 @@ export const translations = {
   },
   JP: {
     intro: [
-      "ステップ1：理解できない講義をアップロードしてください",
-      "ステップ2：母国語に翻訳された授業の要約を見て学習してください",
-      "ステップ3：生成された問題を見て学習してください",
-      "ステップ4：その授業の深化を扱った内容も学習してみてください",
-      "Orbitと一緒に学習してみませんか？",
+      "1. 理解しにくい講義をアップロードしてください。",
+      "2. 授業内容をテキストで整理し、母国語に翻訳された要約で学習してください。",
+      "3. 自動生成された問題を通じて学んだ内容を確認してください。",
+      "4. 追加で提供されるレビューコンテンツで内容をもう一度学習してください。",
+      "Orbitと一緒に学習を始めてみませんか？",
     ],
     title: "Orbit",
     signup: {
@@ -673,11 +673,11 @@ export const translations = {
   },
   VI: {
     intro: [
-      "Bước 1: Tải lên các bài giảng bạn không hiểu",
-      "Bước 2: Xem và học từ bản tóm tắt bài giảng được dịch sang ngôn ngữ mẹ đẻ của bạn",
-      "Bước 3: Xem và học từ các câu hỏi được tạo ra",
-      "Bước 4: Hãy thử học từ nội dung nâng cao bao gồm các khía cạnh sâu sắc của bài giảng",
-      "Chúng ta hãy cùng học với Orbit nhé?",
+      "1. Tải lên các bài giảng khó hiểu.",
+      "2. Tổ chức nội dung lớp học thành văn bản và học từ các bản tóm tắt được dịch sang ngôn ngữ mẹ đẻ của bạn.",
+      "3. Kiểm tra những gì bạn đã học thông qua các câu hỏi được tự động tạo ra.",
+      "4. Học lại nội dung một lần nữa với nội dung đánh giá bổ sung được cung cấp.",
+      "Chúng ta hãy bắt đầu học với Orbit nhé?",
     ],
     title: "Orbit",
     signup: {
