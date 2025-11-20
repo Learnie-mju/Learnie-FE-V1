@@ -1,6 +1,8 @@
 // src/App.tsx
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/login';
+import SignupPage from './pages/signup';
+import HomePage from './pages/home';
 // Next의 (routes)/home/page.tsx 이런 구조를 그대로 import한다고 가정
 
 function App() {
@@ -10,10 +12,13 @@ function App() {
       <Route path="/" element={<Navigate to="/login" replace />} />
 
       {/* /home */}
-      {/* <Route path="/home" element={<HomePage />} /> */}
+      <Route path="/home" element={<HomePage />} />
 
       {/* /login */}
       <Route path="/login" element={<LoginPage />} />
+
+      {/* /signup */}
+      <Route path="/signup" element={<SignupPage />} />
 
       {/* notes 관련 (folderId는 동적 파라미터) */}
       {/* <Route path="/notes/:folderId/confirm" element={<ConfirmPage />} />

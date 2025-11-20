@@ -8,6 +8,7 @@ const LANGUAGE_OPTIONS = [
   { code: "ko" as const, label: "한국어" },
   { code: "en" as const, label: "English" },
   { code: "zh" as const, label: "中文" },
+  { code: "ja" as const, label: "日本語" },
 ] as const;
 
 const LoginIntro = () => {
@@ -40,10 +41,10 @@ const LoginIntro = () => {
   }, [messages]);
 
   return (
-    <div className="text-white w-full bg-black-90 relative overflow-hidden">
+    <div className="text-gray-900 w-full bg-white relative overflow-hidden">
       {/* 헤더 - LectureLen 및 언어 선택 */}
       <div className="absolute top-0 left-0 right-0 z-20 py-8 px-8 md:px-16 flex justify-between items-start">
-        <h1 className="text-2xl md:text-3xl font-Pretendard font-semibold text-white">
+        <h1 className="text-2xl md:text-3xl font-Pretendard font-semibold text-gray-900">
           {title}
         </h1>
 
@@ -56,7 +57,7 @@ const LoginIntro = () => {
               className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
                 language === option.code
                   ? "bg-primary text-white"
-                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               {option.label}
@@ -74,7 +75,7 @@ const LoginIntro = () => {
               return (
                 <p
                   key={index}
-                  className={`font-Pretendard font-normal text-lg md:text-xl lg:text-2xl leading-relaxed text-gray-100 transition-all duration-700 ${
+                  className={`font-Pretendard font-normal text-lg md:text-xl lg:text-2xl leading-relaxed text-gray-700 transition-all duration-700 ${
                     isVisible
                       ? "opacity-100 translate-y-0"
                       : "opacity-0 translate-y-4"
