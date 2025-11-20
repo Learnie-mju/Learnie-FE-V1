@@ -27,7 +27,7 @@ const QuizDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
   const [visibleAnswers, setVisibleAnswers] = useState<number[]>([]);
-  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "plan">(
+  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "review">(
     "quiz"
   );
 
@@ -201,14 +201,14 @@ const QuizDetail = () => {
                   {t.content.quiz}
                 </button>
                 <button
-                  onClick={() => setActiveTab("plan")}
+                  onClick={() => setActiveTab("review")}
                   className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
-                    activeTab === "plan"
+                    activeTab === "review"
                       ? "border-primary text-primary bg-primary/5"
                       : "border-gray-300 text-gray-600 hover:bg-gray-50"
                   }`}
                 >
-                  계획
+                  리뷰
                 </button>
               </div>
 
@@ -346,13 +346,21 @@ const QuizDetail = () => {
                 </div>
               )}
 
-              {activeTab === "plan" && (
+              {activeTab === "review" && (
                 <div>
                   <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
-                    계획
+                    리뷰
                   </h2>
-                  <div className="text-gray-700 font-Pretendard leading-relaxed">
-                    <p>학습 계획이 여기에 표시됩니다.</p>
+                  <div className="text-gray-700 font-Pretendard leading-relaxed whitespace-pre-wrap">
+                    {lectureData ? (
+                      <div className="leading-relaxed">
+                        <p className="text-gray-500 italic">
+                          리뷰 기능은 강의 상세 페이지에서 생성할 수 있습니다.
+                        </p>
+                      </div>
+                    ) : (
+                      <p>강의 리뷰가 여기에 표시됩니다.</p>
+                    )}
                   </div>
                 </div>
               )}

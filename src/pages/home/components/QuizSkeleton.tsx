@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
+import { useLanguage, translations } from "../../../store/useLanguageStore";
 
 const QuizSkeleton = () => {
+  const { language } = useLanguage();
+  const t = translations[language].home.content.quizGenerating;
+  
   const [loadingStep, setLoadingStep] = useState(0);
   const loadingMessages = [
-    "강의 내용을 분석하고 있습니다...",
-    "문제를 생성하고 있습니다...",
-    "난이도를 조정하고 있습니다...",
-    "최종 검토 중입니다...",
+    t.analyzing,
+    t.creating,
+    t.adjusting,
+    t.reviewing,
   ];
 
   useEffect(() => {
@@ -78,19 +82,19 @@ const QuizSkeleton = () => {
           <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                퀴즈 번호
+                {translations[language].home.content.quizNumber}
               </th>
               <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                문제 개수
+                {translations[language].home.content.questionCount}
               </th>
               <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                난이도
+                {translations[language].home.content.difficulty}
               </th>
               <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                생성일
+                {translations[language].home.content.createdAt}
               </th>
               <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                다운로드
+                {translations[language].home.content.download}
               </th>
             </tr>
           </thead>
@@ -166,7 +170,7 @@ const QuizSkeleton = () => {
       {/* 하단 안내 메시지 */}
       <div className="text-center">
         <p className="text-sm text-gray-500 font-Pretendard">
-          잠시만 기다려주세요. AI가 최적의 문제를 생성하고 있습니다.
+          {t.waitMessage}
         </p>
       </div>
     </div>

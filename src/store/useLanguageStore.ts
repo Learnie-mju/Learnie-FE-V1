@@ -136,6 +136,14 @@ export const translations = {
         questionTypeTrueFalse: "o.x",
         questionTypeMultipleChoice: "객관식",
         generateQuiz: "문제지 생성",
+        quizGenerating: {
+          analyzing: "강의 내용을 분석하고 있습니다...",
+          creating: "문제를 생성하고 있습니다...",
+          adjusting: "난이도를 조정하고 있습니다...",
+          reviewing: "최종 검토 중입니다...",
+          waitMessage:
+            "잠시만 기다려주세요. AI가 최적의 문제를 생성하고 있습니다.",
+        },
       },
       uploadModal: {
         fileInfo: "파일 정보",
@@ -269,6 +277,13 @@ export const translations = {
         questionTypeTrueFalse: "True/False",
         questionTypeMultipleChoice: "Multiple Choice",
         generateQuiz: "Generate Quiz",
+        quizGenerating: {
+          analyzing: "Analyzing lecture content...",
+          creating: "Creating questions...",
+          adjusting: "Adjusting difficulty...",
+          reviewing: "Final review in progress...",
+          waitMessage: "Please wait. AI is generating optimal questions.",
+        },
       },
       uploadModal: {
         fileInfo: "File Information",
@@ -401,6 +416,13 @@ export const translations = {
         questionTypeTrueFalse: "判断题",
         questionTypeMultipleChoice: "选择题",
         generateQuiz: "生成试卷",
+        quizGenerating: {
+          analyzing: "正在分析讲座内容...",
+          creating: "正在创建问题...",
+          adjusting: "正在调整难度...",
+          reviewing: "正在进行最终审查...",
+          waitMessage: "请稍候。AI正在生成最佳问题。",
+        },
       },
       uploadModal: {
         fileInfo: "文件信息",
@@ -531,6 +553,13 @@ export const translations = {
         questionTypeTrueFalse: "○×",
         questionTypeMultipleChoice: "選択式",
         generateQuiz: "問題用紙生成",
+        quizGenerating: {
+          analyzing: "講義内容を分析しています...",
+          creating: "問題を作成しています...",
+          adjusting: "難易度を調整しています...",
+          reviewing: "最終確認中です...",
+          waitMessage: "少々お待ちください。AIが最適な問題を生成しています。",
+        },
       },
       uploadModal: {
         fileInfo: "ファイル情報",
@@ -664,6 +693,13 @@ export const translations = {
         questionTypeTrueFalse: "Đúng/Sai",
         questionTypeMultipleChoice: "Trắc nghiệm",
         generateQuiz: "Tạo đề thi",
+        quizGenerating: {
+          analyzing: "Đang phân tích nội dung bài giảng...",
+          creating: "Đang tạo câu hỏi...",
+          adjusting: "Đang điều chỉnh độ khó...",
+          reviewing: "Đang xem xét cuối cùng...",
+          waitMessage: "Vui lòng đợi. AI đang tạo các câu hỏi tối ưu.",
+        },
       },
       uploadModal: {
         fileInfo: "Thông tin tệp",

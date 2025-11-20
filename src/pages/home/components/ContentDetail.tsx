@@ -132,8 +132,6 @@ const ContentDetail = () => {
   // 강의 리뷰 상태
   const [review, setReview] = useState<CreateReviewResponse | null>(null);
   const [isGeneratingReview, setIsGeneratingReview] = useState(false);
-  const [showReviewCreateForm, setShowReviewCreateForm] = useState(false);
-  const [reviewTitle, setReviewTitle] = useState<string>("");
 
   if (isLoading) {
     return (
@@ -606,96 +604,45 @@ const ContentDetail = () => {
                       <h2 className="text-xl font-Pretendard font-semibold text-gray-900">
                         {t.content.advanced}
                       </h2>
-                      {!review && !showReviewCreateForm && (
+                      {!review && !isGeneratingReview && (
                         <button
-                          onClick={() => setShowReviewCreateForm(true)}
-                          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
+                          onClick={async () => {
+                            if (!lectureData?.lectureId) {
+                              toast.error("강의 정보를 불러올 수 없습니다.");
+                              return;
+                            }
+
+                            setIsGeneratingReview(true);
+
+                            try {
+                              console.log("[ContentDetail] 리뷰 생성 시작:", {
+                                lectureId: lectureData.lectureId,
+                              });
+
+                              // 제목 없이 lectureId만으로 리뷰 생성
+                              const createdReview = await createReviewAPI(
+                                lectureData.lectureId,
+                                "", // 제목 없음
+                                "" // 리뷰 내용도 서버에서 생성
+                              );
+
+                              console.log("[ContentDetail] 생성된 리뷰:", createdReview);
+                              setReview(createdReview);
+                              toast.success("리뷰가 생성되었습니다!");
+                            } catch (error) {
+                              console.error("[ContentDetail] 리뷰 생성 실패:", error);
+                              toast.error("리뷰 생성에 실패했습니다.");
+                            } finally {
+                              setIsGeneratingReview(false);
+                            }
+                          }}
+                          disabled={!lectureData?.lectureId || isGeneratingReview}
+                          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          리뷰 생성
+                          {isGeneratingReview ? "리뷰 생성 중..." : "리뷰 생성"}
                         </button>
                       )}
                     </div>
-
-                    {/* 리뷰 생성 폼 */}
-                    {showReviewCreateForm && (
-                      <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
-                        <h3 className="text-lg font-Pretendard font-semibold text-gray-900 mb-4">
-                          강의 리뷰 생성
-                        </h3>
-
-                        {/* 리뷰 제목 */}
-                        <div className="mb-6">
-                          <label className="block text-sm font-Pretendard text-gray-700 mb-2">
-                            제목
-                          </label>
-                          <input
-                            type="text"
-                            value={reviewTitle}
-                            onChange={(e) => setReviewTitle(e.target.value)}
-                            placeholder="리뷰 제목을 입력하세요"
-                            className="w-full px-3 py-2 border border-gray-300 rounded text-sm font-Pretendard focus:outline-none focus:ring-2 focus:ring-primary"
-                          />
-                        </div>
-
-                        {/* 리뷰 생성 버튼 */}
-                        <div className="flex gap-2">
-                          <button
-                            onClick={async () => {
-                              if (!reviewTitle.trim()) {
-                                toast.error("제목을 입력해주세요.");
-                                return;
-                              }
-
-                              if (!lectureData?.lectureId) {
-                                toast.error("강의 정보를 불러올 수 없습니다.");
-                                return;
-                              }
-
-                              setIsGeneratingReview(true);
-                              setShowReviewCreateForm(false);
-
-                              try {
-                                console.log("[ContentDetail] 리뷰 생성 시작:", {
-                                  lectureId: lectureData.lectureId,
-                                  title: reviewTitle,
-                                });
-
-                                // API는 review 필드가 필요하므로 제목을 review로도 사용
-                                const createdReview = await createReviewAPI(
-                                  lectureData.lectureId,
-                                  reviewTitle,
-                                  reviewTitle
-                                );
-
-                                console.log("[ContentDetail] 생성된 리뷰:", createdReview);
-                                setReview(createdReview);
-                                setReviewTitle("");
-                                toast.success("리뷰가 생성되었습니다!");
-                              } catch (error) {
-                                console.error("[ContentDetail] 리뷰 생성 실패:", error);
-                                toast.error("리뷰 생성에 실패했습니다.");
-                                setShowReviewCreateForm(true);
-                              } finally {
-                                setIsGeneratingReview(false);
-                              }
-                            }}
-                            disabled={!reviewTitle.trim() || !lectureData?.lectureId || isGeneratingReview}
-                            className="flex-1 px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            {isGeneratingReview ? "생성 중..." : "리뷰 생성"}
-                          </button>
-                          <button
-                            onClick={() => {
-                              setShowReviewCreateForm(false);
-                              setReviewTitle("");
-                            }}
-                            className="px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900"
-                          >
-                            취소
-                          </button>
-                        </div>
-                      </div>
-                    )}
 
                     {/* 리뷰 생성 중 */}
                     {isGeneratingReview && (
@@ -706,17 +653,24 @@ const ContentDetail = () => {
 
                     {/* 생성된 리뷰 표시 */}
                     {review && !isGeneratingReview && (
-                      <div className="text-gray-700 font-Pretendard leading-relaxed">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-Pretendard font-semibold text-gray-900">
-                            {review.title}
-                          </h3>
-                        </div>
+                      <div className="text-gray-700 font-Pretendard leading-relaxed whitespace-pre-wrap">
+                        {review.title && (
+                          <div className="mb-4">
+                            <h3 className="text-lg font-Pretendard font-semibold text-gray-900">
+                              {review.title}
+                            </h3>
+                          </div>
+                        )}
+                        {review.review && (
+                          <div className="leading-relaxed">
+                            {review.review}
+                          </div>
+                        )}
                       </div>
                     )}
 
-                    {/* 리뷰가 없고 폼도 안 보일 때 */}
-                    {!review && !showReviewCreateForm && !isGeneratingReview && (
+                    {/* 리뷰가 없고 생성 중이 아닐 때 */}
+                    {!review && !isGeneratingReview && (
                       <div className="text-gray-700 font-Pretendard leading-relaxed">
                         <p>{t.content.advancedContent}</p>
                       </div>
