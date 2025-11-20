@@ -168,7 +168,7 @@ const ContentDetail = () => {
           {/* 뒤로가기 버튼 */}
           <button
             onClick={() => navigate("/home")}
-            className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-Pretendard text-gray-600 hover:text-gray-900 transition-colors"
           >
             <svg
               className="w-5 h-5 text-gray-600"
@@ -183,6 +183,7 @@ const ContentDetail = () => {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
+            {t.content.back}
           </button>
 
           <div className="flex items-center gap-4">

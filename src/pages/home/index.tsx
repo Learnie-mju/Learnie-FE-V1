@@ -254,7 +254,7 @@ const HomePage = () => {
                     onClick={() => setSelectedFolderId(null)}
                     className="px-4 py-2 text-sm font-Pretendard text-gray-600 hover:text-gray-900 transition-colors"
                   >
-                    ← 뒤로가기
+                    ← {t.content.back}
                   </button>
                 </div>
 
@@ -305,7 +305,7 @@ const HomePage = () => {
                           </svg>
                         </div>
                         <p className="text-sm text-gray-500 font-Pretendard">
-                          강의 상세 보기
+                          {t.content.viewDetails}
                         </p>
                       </button>
                     ))}
