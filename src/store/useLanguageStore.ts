@@ -146,6 +146,19 @@ export const translations = {
       uploadArea: {
         title: "파일을 첨부해 주세요!",
         description: "파일을 드래그하거나 클릭하여 업로드하세요",
+        folderRequired:
+          "⚠️ 먼저 사이드바에서 폴더를 선택하거나 새 폴더를 만들어주세요",
+        createFolder: "폴더 만들기",
+      },
+      folder: {
+        noFolders: "폴더가 없습니다",
+        createFolder: "새 폴더 만들기",
+        folderName: "폴더 이름",
+        folderNamePlaceholder: "폴더 이름을 입력하세요",
+        creating: "생성 중...",
+        create: "생성",
+        selectFolderFirst:
+          "먼저 사이드바에서 폴더를 선택하거나 새 폴더를 생성해주세요",
       },
     },
     userMenu: {
@@ -266,6 +279,19 @@ export const translations = {
       uploadArea: {
         title: "Please attach a file!",
         description: "Drag or click to upload files",
+        folderRequired:
+          "⚠️ Please select a folder from the sidebar or create a new folder first",
+        createFolder: "Create Folder",
+      },
+      folder: {
+        noFolders: "No folders",
+        createFolder: "Create New Folder",
+        folderName: "Folder Name",
+        folderNamePlaceholder: "Enter folder name",
+        creating: "Creating...",
+        create: "Create",
+        selectFolderFirst:
+          "Please select a folder from the sidebar or create a new folder first",
       },
     },
     userMenu: {
@@ -385,6 +411,17 @@ export const translations = {
       uploadArea: {
         title: "请附加文件！",
         description: "拖放或点击上传文件",
+        folderRequired: "⚠️ 请先从侧边栏选择文件夹或创建新文件夹",
+        createFolder: "创建文件夹",
+      },
+      folder: {
+        noFolders: "没有文件夹",
+        createFolder: "创建新文件夹",
+        folderName: "文件夹名称",
+        folderNamePlaceholder: "请输入文件夹名称",
+        creating: "创建中...",
+        create: "创建",
+        selectFolderFirst: "请先从侧边栏选择文件夹或创建新文件夹",
       },
     },
     userMenu: {
@@ -505,6 +542,19 @@ export const translations = {
         title: "ファイルを添付してください！",
         description:
           "ファイルをドラッグまたはクリックしてアップロードしてください",
+        folderRequired:
+          "⚠️ まずサイドバーからフォルダを選択するか、新しいフォルダを作成してください",
+        createFolder: "フォルダを作成",
+      },
+      folder: {
+        noFolders: "フォルダがありません",
+        createFolder: "新しいフォルダを作成",
+        folderName: "フォルダ名",
+        folderNamePlaceholder: "フォルダ名を入力してください",
+        creating: "作成中...",
+        create: "作成",
+        selectFolderFirst:
+          "まずサイドバーからフォルダを選択するか、新しいフォルダを作成してください",
       },
     },
     userMenu: {
@@ -624,6 +674,19 @@ export const translations = {
       uploadArea: {
         title: "Vui lòng đính kèm tệp!",
         description: "Kéo thả hoặc nhấp để tải tệp lên",
+        folderRequired:
+          "⚠️ Vui lòng chọn thư mục từ thanh bên hoặc tạo thư mục mới trước",
+        createFolder: "Tạo thư mục",
+      },
+      folder: {
+        noFolders: "Không có thư mục",
+        createFolder: "Tạo thư mục mới",
+        folderName: "Tên thư mục",
+        folderNamePlaceholder: "Nhập tên thư mục",
+        creating: "Đang tạo...",
+        create: "Tạo",
+        selectFolderFirst:
+          "Vui lòng chọn thư mục từ thanh bên hoặc tạo thư mục mới trước",
       },
     },
     userMenu: {

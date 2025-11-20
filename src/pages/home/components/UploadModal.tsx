@@ -6,6 +6,7 @@ interface UploadModalProps {
   onClose: () => void;
   onConfirm: (classTitle: string, files: File[]) => void;
   files: File[];
+  selectedFolderId?: number | null;
 }
 
 const UploadModal = ({
@@ -13,6 +14,7 @@ const UploadModal = ({
   onClose,
   onConfirm,
   files,
+  selectedFolderId,
 }: UploadModalProps) => {
   const { language } = useLanguage();
   const t = translations[language].home.uploadModal;
@@ -31,6 +33,11 @@ const UploadModal = ({
   const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
   const handleConfirm = () => {
+    if (!selectedFolderId) {
+      alert("먼저 폴더를 선택하거나 생성해주세요.");
+      return;
+    }
+
     if (!classTitle.trim()) {
       alert("제목을 입력해주세요.");
       return;
@@ -103,7 +110,9 @@ const UploadModal = ({
           </button>
           <button
             onClick={handleConfirm}
-            disabled={!classTitle.trim() || files.length === 0}
+            disabled={
+              !selectedFolderId || !classTitle.trim() || files.length === 0
+            }
             className="px-6 py-2.5 bg-primary text-white rounded-lg font-Pretendard font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {t.confirm}

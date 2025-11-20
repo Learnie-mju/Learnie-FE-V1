@@ -1,36 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
 import { useAuth } from "../../../store/useAuthStore";
+import { getFoldersAPI, type FolderResponse } from "../../../api/folder";
 
-const Sidebar = () => {
+interface SidebarProps {
+  selectedFolderId?: number | null;
+  onFolderSelect?: (folderId: number | null) => void;
+  refreshTrigger?: number; // 폴더 생성 후 새로고침을 위한 트리거
+}
+
+const Sidebar = ({
+  selectedFolderId,
+  onFolderSelect,
+  refreshTrigger,
+}: SidebarProps) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const t = translations[language];
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
+  const [folders, setFolders] = useState<FolderResponse[]>([]);
+  const [isLoadingFolders, setIsLoadingFolders] = useState(false);
 
-  // 임시 기록 데이터 (실제로는 API에서 가져옴)
-  const mockRecords = [
-    {
-      id: "1",
-      title: "콘텐츠 스토리 텔링",
-      createdAt: "2024-01-15",
-      updatedAt: "2024-01-15",
-    },
-    {
-      id: "2",
-      title: "게임 엔진 1",
-      createdAt: "2024-01-16",
-      updatedAt: "2024-01-16",
-    },
-    {
-      id: "3",
-      title: "역사와 문명",
-      createdAt: "2024-01-17",
-      updatedAt: "2024-01-17",
-    },
-  ];
+  // 폴더 목록 조회
+  useEffect(() => {
+    const fetchFolders = async () => {
+      if (!user?.id) return;
+
+      setIsLoadingFolders(true);
+      try {
+        const folderList = await getFoldersAPI(user.id);
+        setFolders(folderList);
+      } catch (error) {
+        console.error("폴더 목록 조회 실패:", error);
+        // 에러 발생 시 빈 배열로 설정
+        setFolders([]);
+      } finally {
+        setIsLoadingFolders(false);
+      }
+    };
+
+    fetchFolders();
+  }, [user?.id, refreshTrigger]); // refreshTrigger가 변경되면 폴더 목록 재조회
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
@@ -105,22 +117,48 @@ const Sidebar = () => {
             </button>
             {isCoursesOpen && (
               <div className="mt-2 ml-8">
-                {mockRecords.length === 0 ? (
+                {isLoadingFolders ? (
                   <div className="px-4 py-2 text-sm text-gray-400">
-                    기록된 내역이 없습니다
+                    로딩 중...
+                  </div>
+                ) : folders.length === 0 ? (
+                  <div className="px-4 py-2 text-sm text-gray-400">
+                    {t.home.folder.noFolders}
                   </div>
                 ) : (
                   <ul className="space-y-1">
-                    {mockRecords.map((record) => (
-                      <li key={record.id}>
+                    {folders.map((folder) => (
+                      <li key={folder.folderId}>
                         <button
-                          onClick={() => navigate(`/home/content/${record.id}`)}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                          onClick={() => {
+                            if (onFolderSelect) {
+                              onFolderSelect(
+                                selectedFolderId === folder.folderId
+                                  ? null
+                                  : folder.folderId
+                              );
+                            }
+                          }}
+                          className={`w-full text-left px-4 py-2 text-sm rounded transition-colors flex items-center gap-2 ${
+                            selectedFolderId === folder.folderId
+                              ? "bg-primary/10 text-primary font-medium"
+                              : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          }`}
                         >
-                          <div className="font-medium">{record.title}</div>
-                          <div className="text-xs text-gray-400 mt-0.5">
-                            {record.createdAt}
-                          </div>
+                          <svg
+                            className="w-4 h-4 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                            />
+                          </svg>
+                          <span className="truncate">{folder.folderName}</span>
                         </button>
                       </li>
                     ))}
