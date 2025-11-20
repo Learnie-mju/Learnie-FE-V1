@@ -2,11 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
 import { useAuth } from "../../../store/useAuthStore";
-import type { LectureUploadResponse } from "../../../api/lecture";
+import {
+  getLectureDetailAPI,
+  type LectureUploadResponse,
+} from "../../../api/lecture";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
 import UserMenu from "./UserMenu";
 import ReactMarkdown from "react-markdown";
+import toast from "react-hot-toast";
 
 const LANGUAGE_OPTIONS = [
   { code: "KR" as const, label: "한국어" },
@@ -43,9 +47,49 @@ const ContentDetail = () => {
   const t = translations[language].home;
 
   // location.state에서 전달된 강의 데이터 가져오기
-  const lectureData = location.state?.lectureData as
+  const stateLectureData = location.state?.lectureData as
     | LectureUploadResponse
     | undefined;
+
+  const [lectureData, setLectureData] = useState<LectureUploadResponse | null>(
+    stateLectureData || null
+  );
+  const [isLoading, setIsLoading] = useState(!stateLectureData);
+
+  // 강의 상세 정보 가져오기
+  useEffect(() => {
+    const fetchLectureDetail = async () => {
+      if (!contentId) return;
+
+      // state에서 데이터가 있으면 사용하고, 없으면 API 호출
+      if (stateLectureData) {
+        setLectureData(stateLectureData);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const lectureId = parseInt(contentId, 10);
+        if (isNaN(lectureId)) {
+          toast.error("잘못된 강의 ID입니다.");
+          navigate("/home");
+          return;
+        }
+
+        const data = await getLectureDetailAPI(lectureId);
+        setLectureData(data);
+      } catch (error) {
+        console.error("강의 상세 조회 실패:", error);
+        toast.error("강의 정보를 불러오는데 실패했습니다.");
+        navigate("/home");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLectureDetail();
+  }, [contentId, stateLectureData, navigate]);
 
   // 로그인된 경우 사용자 정보의 언어를 우선 사용
   useEffect(() => {
@@ -73,6 +117,30 @@ const ContentDetail = () => {
   const [showPlanCreateForm, setShowPlanCreateForm] = useState(false);
   const [goalDays, setGoalDays] = useState<number>(1);
   const [dailyHours, setDailyHours] = useState<number>(1);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen bg-white overflow-hidden relative">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-gray-500 font-Pretendard">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!lectureData) {
+    return (
+      <div className="flex h-screen bg-white overflow-hidden relative">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-gray-500 font-Pretendard">
+            강의 정보를 불러올 수 없습니다.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-white overflow-hidden relative">

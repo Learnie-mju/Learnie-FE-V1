@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage, translations } from "../../store/useLanguageStore";
 import { useAuth } from "../../store/useAuthStore";
-import { uploadLectureAPI } from "../../api/lecture";
-import { createFolderAPI } from "../../api/folder";
+import {
+  uploadLectureAPI,
+  getLectureListByFolderAPI,
+  type LectureListItem,
+} from "../../api/lecture";
+import { createFolderAPI, getFoldersAPI } from "../../api/folder";
 import toast from "react-hot-toast";
 import Sidebar from "./components/Sidebar";
 import UploadModal from "./components/UploadModal";
@@ -21,6 +25,7 @@ const LANGUAGE_OPTIONS = [
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, setLanguage } = useLanguage();
   const { user } = useAuth();
   const t = translations[language].home;
@@ -50,6 +55,12 @@ const HomePage = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [folderRefreshTrigger, setFolderRefreshTrigger] = useState(0);
+  const [lectures, setLectures] = useState<LectureListItem[]>([]);
+  const [isLoadingLectures, setIsLoadingLectures] = useState(false);
+  const [selectedFolderName, setSelectedFolderName] = useState<string>("");
+  const [folders, setFolders] = useState<
+    Array<{ folderId: number; folderName: string }>
+  >([]);
 
   // 폴더 생성 핸들러
   const handleCreateFolder = async (folderName: string) => {
@@ -66,6 +77,7 @@ const HomePage = () => {
       setFolderRefreshTrigger((prev) => prev + 1);
       // 생성된 폴더 자동 선택
       setSelectedFolderId(newFolder.folderId);
+      setSelectedFolderName(newFolder.folderName);
       toast.success("폴더가 생성되었습니다.");
     } catch (error) {
       console.error("폴더 생성 실패:", error);
@@ -75,11 +87,83 @@ const HomePage = () => {
     }
   };
 
+  // 폴더 목록 가져오기
+  useEffect(() => {
+    const fetchFolders = async () => {
+      if (!user?.id) return;
+
+      try {
+        const folderList = await getFoldersAPI(user.id);
+        setFolders(
+          folderList.map((folder) => ({
+            folderId: folder.folderId,
+            folderName: folder.folderName,
+          }))
+        );
+      } catch (error) {
+        console.error("폴더 목록 조회 실패:", error);
+      }
+    };
+
+    fetchFolders();
+  }, [user?.id, folderRefreshTrigger]);
+
+  // 폴더 선택 시 강의 목록 가져오기
+  useEffect(() => {
+    const fetchLectures = async () => {
+      if (!selectedFolderId) {
+        setLectures([]);
+        setSelectedFolderName("");
+        return;
+      }
+
+      setIsLoadingLectures(true);
+      try {
+        const response = await getLectureListByFolderAPI(selectedFolderId);
+        setLectures(response.lectureList);
+
+        // 폴더 이름 찾기
+        const folder = folders.find((f) => f.folderId === selectedFolderId);
+        if (folder) {
+          setSelectedFolderName(folder.folderName);
+        }
+      } catch (error) {
+        console.error("강의 목록 조회 실패:", error);
+        toast.error("강의 목록을 불러오는데 실패했습니다.");
+        setLectures([]);
+      } finally {
+        setIsLoadingLectures(false);
+      }
+    };
+
+    fetchLectures();
+  }, [selectedFolderId, folders]);
+
+  // 페이지로 돌아왔을 때 강의 목록 새로고침
+  useEffect(() => {
+    if (location.pathname === "/home" && selectedFolderId) {
+      const fetchLectures = async () => {
+        try {
+          const response = await getLectureListByFolderAPI(selectedFolderId);
+          setLectures(response.lectureList);
+        } catch (error) {
+          console.error("강의 목록 새로고침 실패:", error);
+        }
+      };
+      fetchLectures();
+    }
+  }, [location.pathname, selectedFolderId]);
+
+  // 폴더 선택 핸들러
+  const handleFolderSelect = (folderId: number | null) => {
+    setSelectedFolderId(folderId);
+  };
+
   return (
     <div className="flex h-screen bg-white overflow-hidden relative">
       <Sidebar
         selectedFolderId={selectedFolderId}
-        onFolderSelect={setSelectedFolderId}
+        onFolderSelect={handleFolderSelect}
         refreshTrigger={folderRefreshTrigger}
         onCreateFolderClick={() => setIsCreateFolderModalOpen(true)}
       />
@@ -118,7 +202,7 @@ const HomePage = () => {
         </header>
 
         {/* 메인 콘텐츠 영역 */}
-        <main className="flex-1 flex flex-col items-center justify-center p-8 relative">
+        <main className="flex-1 flex flex-col overflow-hidden bg-white relative">
           {/* 블러 처리 오버레이 */}
           {(isUploading || isUploadComplete) && (
             <div
@@ -146,104 +230,127 @@ const HomePage = () => {
             </div>
           )}
 
-          <div
-            className={`relative flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-lg transition-all duration-300 ${
-              isDragging || isHovering
-                ? "border-primary bg-primary/10 backdrop-blur-sm"
-                : "border-gray-300 bg-gray-50"
-            } ${isUploading || isUploadComplete ? "opacity-30" : ""}`}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
-            onDragEnter={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsDragging(true);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsDragging(false);
-            }}
-            onDragOver={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsDragging(false);
+          {/* 폴더가 선택된 경우 강의 목록 표시 */}
+          {selectedFolderId ? (
+            <div className="flex-1 overflow-y-auto p-8">
+              <div className="max-w-6xl mx-auto">
+                <div className="mb-6 flex items-center justify-between">
+                  <h2 className="text-2xl font-Pretendard font-semibold text-gray-900">
+                    {selectedFolderName || "강의 목록"}
+                  </h2>
+                  <button
+                    onClick={() => setSelectedFolderId(null)}
+                    className="px-4 py-2 text-sm font-Pretendard text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    ← 뒤로가기
+                  </button>
+                </div>
 
-              const files = Array.from(e.dataTransfer.files);
-              if (files.length > 0) {
-                setSelectedFiles(files);
-                setIsModalOpen(true);
-              }
-            }}
-          >
-            {/* 호버 시 블러 오버레이 */}
-            {(isHovering || isDragging) && (
-              <div className="absolute inset-0 bg-primary/5 backdrop-blur-md rounded-lg transition-opacity duration-300" />
-            )}
+                {isLoadingLectures ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="text-gray-500 font-Pretendard">
+                      로딩 중...
+                    </div>
+                  </div>
+                ) : lectures.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <p className="text-gray-500 font-Pretendard mb-4">
+                      이 폴더에 강의가 없습니다.
+                    </p>
+                    <button
+                      onClick={() => setIsModalOpen(true)}
+                      className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
+                    >
+                      강의 업로드
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {lectures.map((lecture) => (
+                      <button
+                        key={lecture.lectureId}
+                        onClick={() => {
+                          navigate(`/home/content/${lecture.lectureId}`);
+                        }}
+                        className="text-left p-6 bg-white border border-gray-200 rounded-lg hover:border-primary hover:shadow-md transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="text-lg font-Pretendard font-semibold text-gray-900 line-clamp-2">
+                            {lecture.title}
+                          </h3>
+                          <svg
+                            className="w-5 h-5 text-gray-400 shrink-0 ml-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-sm text-gray-500 font-Pretendard">
+                          강의 상세 보기
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            /* 폴더가 선택되지 않은 경우 업로드 영역 표시 */
+            <div
+              className={`relative flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-lg transition-all duration-300 m-8 ${
+                isDragging || isHovering
+                  ? "border-primary bg-primary/10 backdrop-blur-sm"
+                  : "border-gray-300 bg-gray-50"
+              } ${isUploading || isUploadComplete ? "opacity-30" : ""}`}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              onDragEnter={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragging(true);
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragging(false);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragging(false);
 
-            <label
-              htmlFor="file-upload-drop"
-              className="relative z-10 flex flex-col items-center justify-center p-12 cursor-pointer"
-            >
-              {/* 구름 아이콘 */}
-              <svg
-                className={`w-16 h-16 mb-4 transition-colors duration-300 ${
-                  isHovering || isDragging ? "text-primary" : "text-gray-400"
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                />
-              </svg>
-              <p
-                className={`font-Pretendard text-lg mb-2 transition-colors duration-300 ${
-                  isHovering || isDragging
-                    ? "text-primary font-semibold"
-                    : "text-gray-600"
-                }`}
-              >
-                {t.uploadArea.title}
-              </p>
-              <p
-                className={`font-Pretendard text-sm transition-colors duration-300 ${
-                  isHovering || isDragging ? "text-primary/70" : "text-gray-400"
-                }`}
-              >
-                {t.uploadArea.description}
-              </p>
-            </label>
-            <input
-              id="file-upload-drop"
-              type="file"
-              accept="audio/*,video/*,.mp3,.mp4,.wav"
-              className="hidden"
-              onChange={(e) => {
-                const files = e.target.files;
-                if (files && files.length > 0) {
-                  setSelectedFiles(Array.from(files));
+                const files = Array.from(e.dataTransfer.files);
+                if (files.length > 0) {
+                  setSelectedFiles(files);
                   setIsModalOpen(true);
                 }
               }}
-            />
+            >
+              {/* 호버 시 블러 오버레이 */}
+              {(isHovering || isDragging) && (
+                <div className="absolute inset-0 bg-primary/5 backdrop-blur-md rounded-lg transition-opacity duration-300" />
+              )}
 
-            {/* 폴더 생성 버튼 */}
-            <div className="absolute bottom-4 right-4 z-10">
-              <button
-                onClick={() => setIsCreateFolderModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm font-medium shadow-lg"
+              <label
+                htmlFor="file-upload-drop"
+                className="relative z-10 flex flex-col items-center justify-center p-12 cursor-pointer"
               >
+                {/* 구름 아이콘 */}
                 <svg
-                  className="w-5 h-5"
+                  className={`w-16 h-16 mb-4 transition-colors duration-300 ${
+                    isHovering || isDragging ? "text-primary" : "text-gray-400"
+                  }`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -252,13 +359,66 @@ const HomePage = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 4v16m8-8H4"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
                   />
                 </svg>
-                {t.uploadArea.createFolder}
-              </button>
+                <p
+                  className={`font-Pretendard text-lg mb-2 transition-colors duration-300 ${
+                    isHovering || isDragging
+                      ? "text-primary font-semibold"
+                      : "text-gray-600"
+                  }`}
+                >
+                  {t.uploadArea.title}
+                </p>
+                <p
+                  className={`font-Pretendard text-sm transition-colors duration-300 ${
+                    isHovering || isDragging
+                      ? "text-primary/70"
+                      : "text-gray-400"
+                  }`}
+                >
+                  {t.uploadArea.description}
+                </p>
+              </label>
+              <input
+                id="file-upload-drop"
+                type="file"
+                accept="audio/*,video/*,.mp3,.mp4,.wav"
+                className="hidden"
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && files.length > 0) {
+                    setSelectedFiles(Array.from(files));
+                    setIsModalOpen(true);
+                  }
+                }}
+              />
+
+              {/* 폴더 생성 버튼 */}
+              <div className="absolute bottom-4 right-4 z-10">
+                <button
+                  onClick={() => setIsCreateFolderModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm font-medium shadow-lg"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  {t.uploadArea.createFolder}
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </main>
 
         {/* 폴더 생성 모달 */}
@@ -305,6 +465,49 @@ const HomePage = () => {
                 file,
                 folderId
               );
+
+              // 업로드한 폴더를 자동으로 선택
+              if (folderId) {
+                setSelectedFolderId(folderId);
+
+                // 폴더 목록이 없으면 먼저 가져오기
+                if (folders.length === 0) {
+                  try {
+                    const folderList = await getFoldersAPI(user.id);
+                    const updatedFolders = folderList.map((folder) => ({
+                      folderId: folder.folderId,
+                      folderName: folder.folderName,
+                    }));
+                    setFolders(updatedFolders);
+
+                    // 폴더 이름 설정
+                    const folder = updatedFolders.find(
+                      (f) => f.folderId === folderId
+                    );
+                    if (folder) {
+                      setSelectedFolderName(folder.folderName);
+                    }
+                  } catch (error) {
+                    console.error("폴더 목록 조회 실패:", error);
+                  }
+                } else {
+                  // 폴더 이름 설정
+                  const folder = folders.find((f) => f.folderId === folderId);
+                  if (folder) {
+                    setSelectedFolderName(folder.folderName);
+                  }
+                }
+
+                // 강의 목록 새로고침
+                try {
+                  const lectureResponse = await getLectureListByFolderAPI(
+                    folderId
+                  );
+                  setLectures(lectureResponse.lectureList);
+                } catch (error) {
+                  console.error("강의 목록 새로고침 실패:", error);
+                }
+              }
 
               // 업로드 완료
               setIsUploadComplete(true);

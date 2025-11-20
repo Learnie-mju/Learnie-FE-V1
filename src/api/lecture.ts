@@ -85,3 +85,13 @@ export const getLectureListByFolderAPI = async (
   );
   return response.data;
 };
+
+// 강의 상세 조회 API
+export const getLectureDetailAPI = async (
+  lectureId: number
+): Promise<LectureUploadResponse> => {
+  const response = await axiosInstance.get<LectureUploadResponse>(
+    `/lectures/${lectureId}`
+  );
+  return response.data;
+};
