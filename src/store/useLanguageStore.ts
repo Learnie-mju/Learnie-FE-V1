@@ -168,6 +168,13 @@ export const translations = {
           "⚠️ 먼저 사이드바에서 폴더를 선택하거나 새 폴더를 만들어주세요",
         createFolder: "폴더 만들기",
       },
+      upload: {
+        uploading: "파일을 업로드하고 있습니다...",
+        processing: "파일을 처리하고 있습니다...",
+        translating: "번역을 진행하고 있습니다...",
+        completing: "완료 중입니다...",
+        waitMessage: "잠시만 기다려주세요. 강의 파일을 처리하고 있습니다.",
+      },
       folder: {
         noFolders: "폴더가 없습니다",
         createFolder: "새 폴더 만들기",
@@ -318,6 +325,13 @@ export const translations = {
           "⚠️ Please select a folder from the sidebar or create a new folder first",
         createFolder: "Create Folder",
       },
+      upload: {
+        uploading: "Uploading file...",
+        processing: "Processing file...",
+        translating: "Translating...",
+        completing: "Completing...",
+        waitMessage: "Please wait. Processing lecture file.",
+      },
       folder: {
         noFolders: "No folders",
         createFolder: "Create New Folder",
@@ -464,6 +478,13 @@ export const translations = {
         description: "拖放或点击上传文件",
         folderRequired: "⚠️ 请先从侧边栏选择文件夹或创建新文件夹",
         createFolder: "创建文件夹",
+      },
+      upload: {
+        uploading: "正在上传文件...",
+        processing: "正在处理文件...",
+        translating: "正在翻译...",
+        completing: "正在完成...",
+        waitMessage: "请稍候。正在处理讲座文件。",
       },
       folder: {
         noFolders: "没有文件夹",
@@ -613,6 +634,13 @@ export const translations = {
           "⚠️ まずサイドバーからフォルダを選択するか、新しいフォルダを作成してください",
         createFolder: "フォルダを作成",
       },
+      upload: {
+        uploading: "ファイルをアップロードしています...",
+        processing: "ファイルを処理しています...",
+        translating: "翻訳を進めています...",
+        completing: "完了中です...",
+        waitMessage: "少々お待ちください。講義ファイルを処理しています。",
+      },
       folder: {
         noFolders: "フォルダがありません",
         createFolder: "新しいフォルダを作成",
@@ -761,6 +789,13 @@ export const translations = {
         folderRequired:
           "⚠️ Vui lòng chọn thư mục từ thanh bên hoặc tạo thư mục mới trước",
         createFolder: "Tạo thư mục",
+      },
+      upload: {
+        uploading: "Đang tải tệp lên...",
+        processing: "Đang xử lý tệp...",
+        translating: "Đang dịch...",
+        completing: "Đang hoàn thành...",
+        waitMessage: "Vui lòng đợi. Đang xử lý tệp bài giảng.",
       },
       folder: {
         noFolders: "Không có thư mục",

@@ -129,9 +129,13 @@ export const createQuizAPI = async (
     level,
   });
 
+  // 퀴즈 생성은 시간이 오래 걸릴 수 있으므로 타임아웃 제거
   const response = await axiosInstance.post<CreateQuizResponse>(
     "/quiz/create",
-    requestData
+    requestData,
+    {
+      timeout: 0, // 타임아웃 없음
+    }
   );
   return response.data;
 };
