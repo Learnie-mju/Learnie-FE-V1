@@ -21,10 +21,17 @@ const HomePage = () => {
   const { session } = useAuth();
   const t = translations[language].home;
 
-  // 로그인된 경우 세션의 언어를 우선 사용
+  // 로그인된 경우 세션의 언어를 우선 사용 (백엔드에서 받은 언어)
   useEffect(() => {
     if (session?.language) {
+      // 세션에 언어가 있으면 무조건 동기화
       setLanguage(session.language);
+    } else if (session) {
+      // 세션은 있지만 language가 없는 경우 localStorage에서 확인
+      const storedLang = localStorage.getItem("userLanguage");
+      if (storedLang && ["KR", "CN", "EN", "JP", "VI"].includes(storedLang)) {
+        setLanguage(storedLang as typeof language);
+      }
     }
   }, [session, setLanguage]);
 

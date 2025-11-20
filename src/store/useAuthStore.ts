@@ -40,21 +40,12 @@ export const useAuth = create<AuthState>((set) => ({
     set({ status: "loading", error: null });
 
     try {
-      // 언어 코드를 API 형식으로 변환 (KR -> ko, EN -> en 등)
-      const languageMap: Record<Language, string> = {
-        KR: "ko",
-        CN: "zh",
-        EN: "en",
-        JP: "ja",
-        VI: "vi",
-      };
-
-      // API 호출 - API 스펙에 맞게 데이터 변환
+      // API 호출 - 언어는 대문자로 그대로 전송 (KR, EN, JP 등)
       const signupResponse = await signupAPI({
         user_id: userid,
         username: username,
         password: password,
-        language: languageMap[language] || language.toLowerCase(),
+        language: language, // 대문자로 그대로 전송
       });
 
       // 백엔드에서 받은 language가 있으면 사용, 없으면 회원가입 시 선택한 언어 사용
@@ -147,36 +138,66 @@ export const useAuth = create<AuthState>((set) => ({
         japanese: "JP",
         vietnamese: "VI",
       };
-      
+
       // 백엔드 응답의 language를 우선 사용
+      // 백엔드는 대문자(JP, KR, EN 등)로 보냄
       let userLanguage: Language = "KR"; // 기본값
-      
+
+      // 디버깅용 로그 (개발 환경에서만)
+      if (import.meta.env.DEV) {
+        console.log("=== 로그인 언어 파싱 ===");
+        console.log("백엔드 응답 전체:", loginResponse);
+        console.log("백엔드 language 필드:", loginResponse.language);
+        console.log("백엔드 language 타입:", typeof loginResponse.language);
+      }
+
       if (loginResponse.language) {
-        const backendLang = String(loginResponse.language).toLowerCase();
-        // 먼저 정확한 매칭 시도
-        if (languageMap[loginResponse.language]) {
-          userLanguage = languageMap[loginResponse.language];
-        } 
-        // 소문자로 변환해서 매칭 시도
-        else if (languageMap[backendLang]) {
-          userLanguage = languageMap[backendLang];
+        const backendLangStr = String(loginResponse.language).trim();
+        const upperLang = backendLangStr.toUpperCase();
+
+        if (import.meta.env.DEV) {
+          console.log("백엔드 language 원본:", backendLangStr);
+          console.log("대문자 변환:", upperLang);
         }
-        // 대문자로 변환해서 매칭 시도 (JP, KR 등)
-        else if (languageMap[backendLang.toUpperCase()]) {
-          userLanguage = languageMap[backendLang.toUpperCase()];
-        }
-        // 직접 Language 타입인지 확인
-        else {
-          const upperLang = String(loginResponse.language).toUpperCase();
-          if (["KR", "CN", "EN", "JP", "VI"].includes(upperLang)) {
-            userLanguage = upperLang as Language;
+
+        // 먼저 정확한 매칭 시도 (원본 그대로)
+        if (languageMap[backendLangStr]) {
+          userLanguage = languageMap[backendLangStr];
+          if (import.meta.env.DEV) {
+            console.log("원본 매칭 성공:", userLanguage);
           }
         }
-        
-        // 디버깅용 로그 (개발 환경에서만)
+        // 대문자로 변환해서 매칭 시도 (JP, KR 등)
+        else if (languageMap[upperLang]) {
+          userLanguage = languageMap[upperLang];
+          if (import.meta.env.DEV) {
+            console.log("대문자 매칭 성공:", userLanguage);
+          }
+        }
+        // 소문자로 변환해서 매칭 시도 (ja, ko 등)
+        else if (languageMap[backendLangStr.toLowerCase()]) {
+          userLanguage = languageMap[backendLangStr.toLowerCase()];
+          if (import.meta.env.DEV) {
+            console.log("소문자 매칭 성공:", userLanguage);
+          }
+        }
+        // 직접 Language 타입인지 확인 (KR, EN, JP, CN, VI)
+        else if (["KR", "CN", "EN", "JP", "VI"].includes(upperLang)) {
+          userLanguage = upperLang as Language;
+          if (import.meta.env.DEV) {
+            console.log("직접 매칭 성공:", userLanguage);
+          }
+        } else {
+          if (import.meta.env.DEV) {
+            console.warn("언어 매칭 실패, 기본값 KR 사용:", backendLangStr);
+          }
+        }
+      } else {
+        // 백엔드에서 language가 없으면 경고
         if (import.meta.env.DEV) {
-          console.log("백엔드 language 응답:", loginResponse.language);
-          console.log("변환된 language:", userLanguage);
+          console.warn(
+            "백엔드 응답에 language 필드가 없습니다. 기본값 KR 사용"
+          );
         }
       }
 
@@ -192,7 +213,10 @@ export const useAuth = create<AuthState>((set) => ({
       if (token) {
         localStorage.setItem("aiTutorToken", token);
       }
+
+      // 언어를 localStorage에 저장하고 언어 스토어도 즉시 업데이트
       localStorage.setItem("userLanguage", userLanguage);
+      useLanguage.getState().setLanguage(userLanguage);
 
       set({
         session: loginData,
@@ -200,8 +224,15 @@ export const useAuth = create<AuthState>((set) => ({
         error: null,
       });
 
-      // 언어 스토어도 업데이트하여 언어 선택 탭에 반영
-      useLanguage.getState().setLanguage(userLanguage);
+      // 디버깅용 로그
+      if (import.meta.env.DEV) {
+        console.log("로그인 완료 - 설정된 언어:", userLanguage);
+        console.log(
+          "localStorage userLanguage:",
+          localStorage.getItem("userLanguage")
+        );
+        console.log("언어 스토어 현재 값:", useLanguage.getState().language);
+      }
 
       // 성공 토스트 표시
       toast.success("로그인에 성공했습니다!");
