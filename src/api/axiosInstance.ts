@@ -1,10 +1,24 @@
 import axios from "axios";
 
 // API Base URL - 환경 변수에서 가져오거나 기본값 사용
-// Vercel 환경 변수에 VITE_API_BASE_URL을 설정하면 해당 값 사용
-// HTTPS가 열리면 Vercel 환경 변수에 https://13.125.45.190:8080 (또는 실제 HTTPS URL) 설정
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://13.125.45.190:8080";
+// 로컬 개발: HTTP 사용 (http://api.learnie-orbit.cloud)
+// 프로덕션: Vercel 환경 변수에 VITE_API_BASE_URL=https://api.learnie-orbit.cloud 설정
+const getDefaultApiUrl = () => {
+  // 개발 환경에서는 HTTP 사용
+  if (import.meta.env.DEV) {
+    return "http://api.learnie-orbit.cloud";
+  }
+  // 프로덕션 환경에서는 HTTPS 사용
+  return "https://api.learnie-orbit.cloud";
+};
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || getDefaultApiUrl();
+
+// 디버깅용 (프로덕션에서도 확인 가능)
+if (import.meta.env.PROD) {
+  console.log("API_BASE_URL:", API_BASE_URL);
+  console.log("VITE_API_BASE_URL env:", import.meta.env.VITE_API_BASE_URL);
+}
 
 // Axios 인스턴스 생성
 export const axiosInstance = axios.create({
