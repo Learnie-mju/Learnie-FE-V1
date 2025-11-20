@@ -4,6 +4,7 @@ import { useLanguage, translations } from "../../store/useLanguageStore";
 import { useAuth } from "../../store/useAuthStore";
 import { uploadLectureAPI } from "../../api/lecture";
 import { createFolderAPI } from "../../api/folder";
+import toast from "react-hot-toast";
 import Sidebar from "./components/Sidebar";
 import UploadModal from "./components/UploadModal";
 import CreateFolderModal from "./components/CreateFolderModal";
@@ -53,7 +54,7 @@ const HomePage = () => {
   // 폴더 생성 핸들러
   const handleCreateFolder = async (folderName: string) => {
     if (!user?.id) {
-      alert("로그인이 필요합니다.");
+      toast.error("로그인이 필요합니다.");
       return;
     }
 
@@ -65,10 +66,10 @@ const HomePage = () => {
       setFolderRefreshTrigger((prev) => prev + 1);
       // 생성된 폴더 자동 선택
       setSelectedFolderId(newFolder.folderId);
-      alert("폴더가 생성되었습니다.");
+      toast.success("폴더가 생성되었습니다.");
     } catch (error) {
       console.error("폴더 생성 실패:", error);
-      alert("폴더 생성에 실패했습니다.");
+      toast.error("폴더 생성에 실패했습니다.");
     } finally {
       setIsCreatingFolder(false);
     }
@@ -80,6 +81,7 @@ const HomePage = () => {
         selectedFolderId={selectedFolderId}
         onFolderSelect={setSelectedFolderId}
         refreshTrigger={folderRefreshTrigger}
+        onCreateFolderClick={() => setIsCreateFolderModalOpen(true)}
       />
 
       {/* 메인 콘텐츠 */}
@@ -90,11 +92,6 @@ const HomePage = () => {
             <h1 className="text-xl font-Pretendard font-semibold text-gray-900">
               {t.sidebar.home}
             </h1>
-            {selectedFolderId && (
-              <span className="text-sm text-gray-500 font-Pretendard">
-                (폴더 선택됨)
-              </span>
-            )}
           </div>
 
           <div className="flex items-center gap-4">
@@ -151,22 +148,13 @@ const HomePage = () => {
 
           <div
             className={`relative flex flex-col items-center justify-center w-full h-full border-2 border-dashed rounded-lg transition-all duration-300 ${
-              !selectedFolderId
-                ? "border-gray-200 bg-gray-100 cursor-not-allowed"
-                : isDragging || isHovering
+              isDragging || isHovering
                 ? "border-primary bg-primary/10 backdrop-blur-sm"
                 : "border-gray-300 bg-gray-50"
             } ${isUploading || isUploadComplete ? "opacity-30" : ""}`}
-            onMouseEnter={() => {
-              if (selectedFolderId) setIsHovering(true);
-            }}
+            onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             onDragEnter={(e) => {
-              if (!selectedFolderId) {
-                e.preventDefault();
-                e.stopPropagation();
-                return;
-              }
               e.preventDefault();
               e.stopPropagation();
               setIsDragging(true);
@@ -177,11 +165,6 @@ const HomePage = () => {
               setIsDragging(false);
             }}
             onDragOver={(e) => {
-              if (!selectedFolderId) {
-                e.preventDefault();
-                e.stopPropagation();
-                return;
-              }
               e.preventDefault();
               e.stopPropagation();
             }}
@@ -189,12 +172,6 @@ const HomePage = () => {
               e.preventDefault();
               e.stopPropagation();
               setIsDragging(false);
-
-              // 폴더가 선택되지 않았으면 드롭 무시
-              if (!selectedFolderId) {
-                alert("먼저 폴더를 선택하거나 생성해주세요.");
-                return;
-              }
 
               const files = Array.from(e.dataTransfer.files);
               if (files.length > 0) {
@@ -210,11 +187,7 @@ const HomePage = () => {
 
             <label
               htmlFor="file-upload-drop"
-              className={`relative z-10 flex flex-col items-center justify-center p-12 ${
-                selectedFolderId
-                  ? "cursor-pointer"
-                  : "cursor-not-allowed opacity-50"
-              }`}
+              className="relative z-10 flex flex-col items-center justify-center p-12 cursor-pointer"
             >
               {/* 구름 아이콘 */}
               <svg
@@ -248,27 +221,15 @@ const HomePage = () => {
               >
                 {t.uploadArea.description}
               </p>
-              {!selectedFolderId && (
-                <p className="font-Pretendard text-xs text-orange-500 mt-2">
-                  {t.uploadArea.folderRequired}
-                </p>
-              )}
             </label>
             <input
               id="file-upload-drop"
               type="file"
               accept="audio/*,video/*,.mp3,.mp4,.wav"
               className="hidden"
-              disabled={!selectedFolderId}
               onChange={(e) => {
                 const files = e.target.files;
                 if (files && files.length > 0) {
-                  // 폴더가 선택되지 않았으면 알림
-                  if (!selectedFolderId) {
-                    alert("먼저 폴더를 선택하거나 생성해주세요.");
-                    e.target.value = ""; // 파일 선택 초기화
-                    return;
-                  }
                   setSelectedFiles(Array.from(files));
                   setIsModalOpen(true);
                 }
@@ -310,8 +271,9 @@ const HomePage = () => {
 
         {/* 업로드 모달 */}
         <UploadModal
+          key={isModalOpen ? "open" : "closed"}
           isOpen={isModalOpen}
-          selectedFolderId={selectedFolderId}
+          refreshTrigger={folderRefreshTrigger}
           onClose={() => {
             setIsModalOpen(false);
             setSelectedFiles([]);
@@ -323,17 +285,9 @@ const HomePage = () => {
               fileInput.value = "";
             }
           }}
-          onConfirm={async (classTitle, files) => {
+          onConfirm={async (classTitle, files, folderId) => {
             if (!user || !user.id) {
-              alert("로그인이 필요합니다.");
-              return;
-            }
-
-            // 폴더 선택 확인
-            if (!selectedFolderId) {
-              alert(
-                "먼저 사이드바에서 폴더를 선택하거나 '폴더 만들기' 버튼으로 새 폴더를 생성해주세요."
-              );
+              toast.error("로그인이 필요합니다.");
               return;
             }
 
@@ -349,7 +303,7 @@ const HomePage = () => {
                 user.id,
                 classTitle,
                 file,
-                selectedFolderId
+                folderId
               );
 
               // 업로드 완료
@@ -422,7 +376,7 @@ const HomePage = () => {
                 }
               }
 
-              alert(errorMessage);
+              toast.error(errorMessage);
               setIsUploading(false);
               setIsUploadComplete(false);
               setShowSuccessMessage(false);

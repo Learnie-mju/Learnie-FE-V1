@@ -8,12 +8,14 @@ interface SidebarProps {
   selectedFolderId?: number | null;
   onFolderSelect?: (folderId: number | null) => void;
   refreshTrigger?: number; // 폴더 생성 후 새로고침을 위한 트리거
+  onCreateFolderClick?: () => void; // 폴더 만들기 클릭 핸들러
 }
 
 const Sidebar = ({
   selectedFolderId,
   onFolderSelect,
   refreshTrigger,
+  onCreateFolderClick,
 }: SidebarProps) => {
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -22,6 +24,7 @@ const Sidebar = ({
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
   const [folders, setFolders] = useState<FolderResponse[]>([]);
   const [isLoadingFolders, setIsLoadingFolders] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
 
   // 폴더 목록 조회
   useEffect(() => {
@@ -43,6 +46,17 @@ const Sidebar = ({
 
     fetchFolders();
   }, [user?.id, refreshTrigger]); // refreshTrigger가 변경되면 폴더 목록 재조회
+
+  // 우클릭 메뉴 닫기
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setContextMenu(null);
+    };
+    if (contextMenu) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [contextMenu]);
 
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
@@ -83,6 +97,10 @@ const Sidebar = ({
           <li>
             <button
               onClick={() => setIsCoursesOpen(!isCoursesOpen)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setContextMenu({ x: e.clientX, y: e.clientY });
+              }}
               className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
             >
               <div className="flex items-center gap-3">
@@ -190,6 +208,40 @@ const Sidebar = ({
           </li>
         </ul>
       </nav>
+
+      {/* 우클릭 메뉴 */}
+      {contextMenu && (
+        <div
+          className="fixed bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 min-w-[150px]"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => {
+              if (onCreateFolderClick) {
+                onCreateFolderClick();
+              }
+              setContextMenu(null);
+            }}
+            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-2"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            {t.home.folder.create}
+          </button>
+        </div>
+      )}
 
       {/* 로그아웃 */}
       <div className="p-4 border-t border-gray-200">
