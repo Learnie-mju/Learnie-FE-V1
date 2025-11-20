@@ -155,7 +155,13 @@ const Sidebar = ({
                       <li key={folder.folderId}>
                         <button
                           onClick={() => {
-                            if (onFolderSelect) {
+                            // 홈 페이지가 아닌 경우 홈으로 이동하면서 폴더 선택
+                            if (window.location.pathname !== "/home") {
+                              navigate("/home", {
+                                state: { selectedFolderId: folder.folderId },
+                              });
+                            } else if (onFolderSelect) {
+                              // 홈 페이지인 경우 기존 로직 사용
                               onFolderSelect(
                                 selectedFolderId === folder.folderId
                                   ? null

@@ -31,9 +31,14 @@ const QuizDetail = () => {
     "quiz"
   );
 
-  // 퀴즈 상세 조회 - 각 quiz_id로 API 호출
+  // 퀴즈 상세 조회 - 각 quiz_id로 API 호출 (quiz 탭일 때만)
   useEffect(() => {
     const fetchQuizDetails = async () => {
+      // quiz 탭이 아닐 때는 요청하지 않음
+      if (activeTab !== "quiz") {
+        return;
+      }
+
       if (!quizIds || !Array.isArray(quizIds) || quizIds.length === 0) {
         toast.error("퀴즈 ID가 없습니다.");
         navigate("/home");
@@ -89,7 +94,7 @@ const QuizDetail = () => {
     };
 
     fetchQuizDetails();
-  }, [quizIds, quizType, navigate]);
+  }, [quizIds, quizType, navigate, activeTab]);
 
   const handleToggleQuiz = (quizId: number) => {
     setSelectedQuizzes((prev) =>
@@ -213,12 +218,20 @@ const QuizDetail = () => {
                   <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
                     {t.content.summary}
                   </h2>
-                  <div className="text-gray-700 font-Pretendard leading-relaxed">
-                    <p>{t.content.summaryContent}</p>
-                    <p className="mt-4">
-                      강의의 주요 내용을 요약한 내용이 여기에 표시됩니다. 핵심
-                      개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
-                    </p>
+                  <div className="text-gray-700 font-Pretendard leading-relaxed whitespace-pre-wrap">
+                    {lectureData?.summary ? (
+                      <div className="leading-relaxed">
+                        {lectureData.summary}
+                      </div>
+                    ) : (
+                      <>
+                        <p>{t.content.summaryContent}</p>
+                        <p className="mt-4">
+                          강의의 주요 내용을 요약한 내용이 여기에 표시됩니다.
+                          핵심 개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
+                        </p>
+                      </>
+                    )}
                   </div>
                 </div>
               )}

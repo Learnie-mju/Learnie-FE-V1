@@ -154,6 +154,18 @@ const HomePage = () => {
     }
   }, [location.pathname, selectedFolderId]);
 
+  // location.state에서 폴더 ID 가져오기
+  useEffect(() => {
+    const stateFolderId = location.state?.selectedFolderId as
+      | number
+      | undefined;
+    if (stateFolderId) {
+      setSelectedFolderId(stateFolderId);
+      // state 초기화
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
   // 폴더 선택 핸들러
   const handleFolderSelect = (folderId: number | null) => {
     setSelectedFolderId(folderId);
