@@ -14,6 +14,12 @@ export interface FolderResponse {
   createdAt?: string;
 }
 
+// 폴더 목록 조회 응답 (새 API)
+export interface FolderListItem {
+  folderId: number;
+  name: string;
+}
+
 // 폴더 생성 API
 export const createFolderAPI = async (
   userId: number,
@@ -26,13 +32,18 @@ export const createFolderAPI = async (
   return response.data;
 };
 
-// 폴더 목록 조회 API
+// 폴더 목록 조회 API (새 엔드포인트: /folders/{userId})
 export const getFoldersAPI = async (
   userId: number
 ): Promise<FolderResponse[]> => {
-  const response = await axiosInstance.get<FolderResponse[]>(
-    `/lectures/folders/${userId}`
+  const response = await axiosInstance.get<FolderListItem[]>(
+    `/folders/${userId}`
   );
-  return response.data;
+  // 응답 구조 변환: { folderId, name } -> { folderId, folderName, userId }
+  return response.data.map((item) => ({
+    folderId: item.folderId,
+    folderName: item.name,
+    userId: userId,
+  }));
 };
 
