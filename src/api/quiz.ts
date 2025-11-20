@@ -17,6 +17,93 @@ export interface CreateQuizResponse {
   [key: string]: unknown;
 }
 
+// 퀴즈 리스트 항목
+export interface QuizListItem {
+  quiz_id: number[];
+  createdAt: string;
+  quizNum: number;
+  level: string;
+  quizType: QuizType;
+}
+
+// 퀴즈 리스트 조회 API
+export const getQuizListAPI = async (
+  lectureId: number
+): Promise<QuizListItem[]> => {
+  console.log("[퀴즈 리스트 조회 API] 요청 파라미터:", { lectureId });
+  console.log("[퀴즈 리스트 조회 API] 요청 URL:", `/quiz/list/${lectureId}`);
+
+  const response = await axiosInstance.get<QuizListItem[]>(
+    `/quiz/list/${lectureId}`
+  );
+
+  console.log("[퀴즈 리스트 조회 API] 전체 응답 객체:", response);
+  console.log("[퀴즈 리스트 조회 API] 응답 데이터 (response.data):", response.data);
+  console.log("[퀴즈 리스트 조회 API] 응답 데이터 JSON:", JSON.stringify(response.data, null, 2));
+  console.log("[퀴즈 리스트 조회 API] 퀴즈 개수:", response.data?.length || 0);
+  
+  // 각 퀴즈 항목 상세 출력
+  if (response.data && Array.isArray(response.data)) {
+    response.data.forEach((quiz, index) => {
+      console.log(`[퀴즈 리스트 조회 API] 퀴즈 #${index + 1}:`, {
+        quiz_id: quiz.quiz_id,
+        createdAt: quiz.createdAt,
+        quizNum: quiz.quizNum,
+        level: quiz.level,
+        quizType: quiz.quizType,
+      });
+    });
+  }
+
+  return response.data;
+};
+
+// 퀴즈 상세 조회 요청
+export interface QuizDetailRequest {
+  quizType: QuizType;
+  quizId: number;
+}
+
+// 퀴즈 상세 항목 (문제)
+export interface QuizDetailItem {
+  id: number;
+  problem: string;
+  answer: string;
+  questionType: string;
+}
+
+// 퀴즈 상세 조회 API (POST 방식)
+export const getQuizDetailAPI = async (
+  quizType: QuizType,
+  quizId: number
+): Promise<QuizDetailItem> => {
+  const requestData: QuizDetailRequest = {
+    quizType: quizType,
+    quizId: quizId,
+  };
+
+  console.log("[퀴즈 상세 조회 API] 요청 파라미터:", { quizType, quizId });
+  console.log("[퀴즈 상세 조회 API] Request Body:", JSON.stringify(requestData, null, 2));
+  console.log("[퀴즈 상세 조회 API] 요청 URL:", `/quiz/detail`);
+
+  const response = await axiosInstance.post<QuizDetailItem>(
+    `/quiz/detail`,
+    requestData
+  );
+
+  console.log("[퀴즈 상세 조회 API] 전체 응답 객체:", response);
+  console.log("[퀴즈 상세 조회 API] 응답 데이터 (response.data):", response.data);
+  console.log("[퀴즈 상세 조회 API] 응답 데이터 JSON:", JSON.stringify(response.data, null, 2));
+  console.log("[퀴즈 상세 조회 API] 문제:", {
+    id: response.data.id,
+    problem: response.data.problem,
+    answer: response.data.answer,
+    questionType: response.data.questionType,
+  });
+
+  return response.data;
+};
+
 // 퀴즈 생성 API
 export const createQuizAPI = async (
   lectureId: number,

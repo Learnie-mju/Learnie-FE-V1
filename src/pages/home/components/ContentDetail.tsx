@@ -6,7 +6,7 @@ import {
   getLectureDetailAPI,
   type LectureUploadResponse,
 } from "../../../api/lecture";
-import { createQuizAPI } from "../../../api/quiz";
+import { createQuizAPI, getQuizListAPI, type QuizListItem } from "../../../api/quiz";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
 import UserMenu from "./UserMenu";
@@ -21,23 +21,6 @@ const LANGUAGE_OPTIONS = [
   { code: "VI" as const, label: "Tiếng Việt" },
 ] as const;
 
-// 임시 퀴즈 데이터
-const mockQuizzes = [
-  {
-    id: 1,
-    number: 1,
-    questionCount: 10,
-    difficulty: "중급",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: 2,
-    number: 2,
-    questionCount: 15,
-    difficulty: "고급",
-    createdAt: "2024-01-16",
-  },
-];
 
 const ContentDetail = () => {
   const { contentId } = useParams<{ contentId: string }>();
@@ -113,6 +96,36 @@ const ContentDetail = () => {
   const [questionType, setQuestionType] = useState<
     "short" | "ox" | "multiple" | null
   >(null);
+
+  // 퀴즈 리스트 상태
+  const [quizList, setQuizList] = useState<QuizListItem[]>([]);
+  const [isLoadingQuizList, setIsLoadingQuizList] = useState(false);
+
+  // 퀴즈 리스트 조회
+  useEffect(() => {
+    const fetchQuizList = async () => {
+      if (!lectureData?.lectureId) return;
+
+      setIsLoadingQuizList(true);
+      try {
+        console.log("[ContentDetail] 퀴즈 리스트 조회 시작 - lectureId:", lectureData.lectureId);
+        const quizzes = await getQuizListAPI(lectureData.lectureId);
+        console.log("[ContentDetail] 받은 퀴즈 리스트:", quizzes);
+        console.log("[ContentDetail] 받은 퀴즈 리스트 개수:", quizzes.length);
+        setQuizList(quizzes);
+        console.log("[ContentDetail] 퀴즈 리스트 상태 업데이트 완료");
+      } catch (error) {
+        console.error("[ContentDetail] 퀴즈 리스트 조회 실패:", error);
+        toast.error("퀴즈 리스트를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoadingQuizList(false);
+      }
+    };
+
+    if (activeTab === "quiz" && lectureData?.lectureId) {
+      fetchQuizList();
+    }
+  }, [lectureData?.lectureId, activeTab]);
 
   // 계획 생성 설정 상태
   const [showPlanCreateForm, setShowPlanCreateForm] = useState(false);
@@ -466,7 +479,15 @@ const ContentDetail = () => {
 
                               toast.success("퀴즈가 생성되었습니다!");
                               
-                              // TODO: 퀴즈 목록 새로고침 (퀴즈 목록 조회 API 필요)
+                              // 퀴즈 목록 새로고침
+                              try {
+                                console.log("[ContentDetail] 퀴즈 생성 후 리스트 새로고침 시작");
+                                const quizzes = await getQuizListAPI(lectureData.lectureId);
+                                console.log("[ContentDetail] 새로고침된 퀴즈 리스트:", quizzes);
+                                setQuizList(quizzes);
+                              } catch (error) {
+                                console.error("[ContentDetail] 퀴즈 리스트 조회 실패:", error);
+                              }
                             } catch (error) {
                               console.error("퀴즈 생성 실패:", error);
                               toast.error("퀴즈 생성에 실패했습니다.");
@@ -488,66 +509,89 @@ const ContentDetail = () => {
                     {/* 퀴즈 리스트 테이블 */}
                     {!isGeneratingQuiz && (
                       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                        <table className="w-full border-collapse">
-                          <thead className="bg-gray-50">
-                            <tr>
-                              <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                                {t.content.quizNumber}
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                                {t.content.questionCount}
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                                {t.content.difficulty}
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                                {t.content.createdAt}
-                              </th>
-                              <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                                {t.content.download}
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {mockQuizzes.map((quiz, index) => (
-                              <tr
-                                key={quiz.id}
-                                className={`hover:bg-gray-50 cursor-pointer transition-colors ${
-                                  index !== mockQuizzes.length - 1
-                                    ? "border-b border-gray-200"
-                                    : ""
-                                }`}
-                                onClick={() =>
-                                  navigate(`/home/quiz/${quiz.id}`)
-                                }
-                              >
-                                <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
-                                  {quiz.number}
-                                </td>
-                                <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
-                                  {quiz.questionCount}
-                                </td>
-                                <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
-                                  {quiz.difficulty}
-                                </td>
-                                <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
-                                  {quiz.createdAt}
-                                </td>
-                                <td className="px-4 py-3">
-                                  <button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      console.log("다운로드", quiz.id);
-                                    }}
-                                    className="text-primary hover:text-primary/80 font-Pretendard text-sm"
-                                  >
-                                    {t.content.download}
-                                  </button>
-                                </td>
+                        {isLoadingQuizList ? (
+                          <div className="p-8 text-center text-gray-500 font-Pretendard">
+                            퀴즈 리스트를 불러오는 중...
+                          </div>
+                        ) : quizList.length === 0 ? (
+                          <div className="p-8 text-center text-gray-500 font-Pretendard">
+                            생성된 퀴즈가 없습니다.
+                          </div>
+                        ) : (
+                          <table className="w-full border-collapse">
+                            <thead className="bg-gray-50">
+                              <tr>
+                                <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                                  {t.content.quizNumber}
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                                  {t.content.questionCount}
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                                  {t.content.difficulty}
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                                  {t.content.createdAt}
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                                  {t.content.download}
+                                </th>
                               </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                            </thead>
+                            <tbody>
+                              {quizList.map((quiz, index) => {
+                                const quizId = Array.isArray(quiz.quiz_id) && quiz.quiz_id.length > 0 
+                                  ? quiz.quiz_id[0] 
+                                  : index + 1;
+                                const createdAt = new Date(quiz.createdAt).toLocaleDateString("ko-KR");
+                                
+                                return (
+                                  <tr
+                                    key={quizId}
+                                    className={`hover:bg-gray-50 cursor-pointer transition-colors ${
+                                      index !== quizList.length - 1
+                                        ? "border-b border-gray-200"
+                                        : ""
+                                    }`}
+                                    onClick={() =>
+                                      navigate(`/home/quiz/${quizId}`, {
+                                        state: {
+                                          quizIds: quiz.quiz_id,
+                                          quizType: quiz.quizType,
+                                          lectureData: lectureData,
+                                        },
+                                      })
+                                    }
+                                  >
+                                    <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
+                                      {quiz.quizNum || index + 1}
+                                    </td>
+                                    <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                      {quiz.quizNum || "-"}
+                                    </td>
+                                    <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                      {quiz.level}
+                                    </td>
+                                    <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                      {createdAt}
+                                    </td>
+                                    <td className="px-4 py-3">
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          console.log("다운로드", quizId);
+                                        }}
+                                        className="text-primary hover:text-primary/80 font-Pretendard text-sm"
+                                      >
+                                        {t.content.download}
+                                      </button>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        )}
                       </div>
                     )}
                   </div>

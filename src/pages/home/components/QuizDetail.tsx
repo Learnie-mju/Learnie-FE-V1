@@ -1,33 +1,94 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
+import {
+  getQuizDetailAPI,
+  type QuizDetailItem,
+  type QuizType,
+} from "../../../api/quiz";
+import { type LectureUploadResponse } from "../../../api/lecture";
 import Sidebar from "./Sidebar";
-
-// 임시 퀴즈 상세 데이터
-const mockQuizDetails = [
-  {
-    id: 1,
-    problem: "다음 중 React의 주요 특징은 무엇인가요?",
-    answer: "컴포넌트 기반 아키텍처",
-    questionType: "객관식",
-  },
-  {
-    id: 2,
-    problem: "useState 훅의 역할은 무엇인가요?",
-    answer: "함수형 컴포넌트에서 상태를 관리합니다",
-    questionType: "주관식",
-  },
-];
+import toast from "react-hot-toast";
 
 const QuizDetail = () => {
-  const { id: _id } = useParams<{ id: string }>(); // 라우팅에 필요
   const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useLanguage();
   const t = translations[language].home;
-  
+
+  // location.state에서 전달된 데이터 가져오기
+  const quizIds = location.state?.quizIds as number[] | undefined;
+  const quizType = location.state?.quizType as QuizType | undefined;
+  const lectureData = location.state?.lectureData as
+    | LectureUploadResponse
+    | undefined;
+
+  const [quizDetails, setQuizDetails] = useState<QuizDetailItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
   const [visibleAnswers, setVisibleAnswers] = useState<number[]>([]);
-  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "plan">("quiz");
+  const [activeTab, setActiveTab] = useState<"summary" | "quiz" | "plan">(
+    "quiz"
+  );
+
+  // 퀴즈 상세 조회 - 각 quiz_id로 API 호출
+  useEffect(() => {
+    const fetchQuizDetails = async () => {
+      if (!quizIds || !Array.isArray(quizIds) || quizIds.length === 0) {
+        toast.error("퀴즈 ID가 없습니다.");
+        navigate("/home");
+        return;
+      }
+
+      if (!quizType) {
+        toast.error("퀴즈 유형이 없습니다.");
+        navigate("/home");
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        console.log("[QuizDetail] 퀴즈 상세 조회 시작:", {
+          quizIds,
+          quizType,
+        });
+
+        // 각 quiz_id로 API 호출
+        const detailsPromises = quizIds.map((quizId) =>
+          getQuizDetailAPI(quizType, quizId)
+        );
+
+        const details = await Promise.all(detailsPromises);
+        console.log("[QuizDetail] 받은 퀴즈 상세 데이터:", details);
+        console.log("[QuizDetail] 퀴즈 상세 데이터 타입:", typeof details);
+        console.log(
+          "[QuizDetail] 퀴즈 상세 데이터 배열 여부:",
+          Array.isArray(details)
+        );
+        console.log("[QuizDetail] 퀴즈 상세 데이터 길이:", details.length);
+
+        // 각 퀴즈 항목 상세 로그
+        details.forEach((detail, idx) => {
+          console.log(`[QuizDetail] 퀴즈 #${idx + 1}:`, {
+            id: detail?.id,
+            problem: detail?.problem,
+            answer: detail?.answer,
+            questionType: detail?.questionType,
+            전체데이터: detail,
+          });
+        });
+
+        setQuizDetails(details);
+      } catch (error) {
+        console.error("[QuizDetail] 퀴즈 상세 조회 실패:", error);
+        toast.error("퀴즈 상세 정보를 불러오는데 실패했습니다.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchQuizDetails();
+  }, [quizIds, quizType, navigate]);
 
   const handleToggleQuiz = (quizId: number) => {
     setSelectedQuizzes((prev) =>
@@ -57,7 +118,7 @@ const QuizDetail = () => {
   return (
     <div className="flex h-screen bg-white overflow-hidden relative">
       <Sidebar />
-      
+
       {/* 메인 콘텐츠 */}
       <div className="flex-1 flex flex-col overflow-hidden bg-white relative">
         {/* 메인 콘텐츠 영역 */}
@@ -88,175 +149,208 @@ const QuizDetail = () => {
                   스크립트 전문
                 </h2>
               </div>
-              
+
               <div className="mb-4">
                 <h3 className="text-lg font-Pretendard font-semibold text-gray-900 mb-2">
-                  수업 제목
+                  {lectureData?.title || "수업 제목"}
                 </h3>
               </div>
-              
-              <div className="space-y-4 text-gray-700 font-Pretendard leading-relaxed">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <p>
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
-                <p>
-                  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                </p>
+
+              <div className="space-y-4 text-gray-700 font-Pretendard leading-relaxed whitespace-pre-wrap">
+                {lectureData?.content ? (
+                  <div className="leading-relaxed">{lectureData.content}</div>
+                ) : (
+                  <>
+                    <p>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Sed do eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua.
+                    </p>
+                    <p>
+                      Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                      laboris nisi ut aliquip ex ea commodo consequat.
+                    </p>
+                    <p>
+                      Duis aute irure dolor in reprehenderit in voluptate velit
+                      esse cillum dolore eu fugiat nulla pariatur.
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
             {/* 오른쪽: 퀴즈 상세 */}
             <div className="flex-1 pl-8">
-          {/* 탭 버튼들 */}
-          <div className="flex gap-2 mb-6">
-            <button
-              onClick={() => setActiveTab("summary")}
-              className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
-                activeTab === "summary"
-                  ? "border-primary text-primary bg-primary/5"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              {t.content.summary}
-            </button>
-            <button
-              onClick={() => setActiveTab("quiz")}
-              className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
-                activeTab === "quiz"
-                  ? "border-primary text-primary bg-primary/5"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              {t.content.quiz}
-            </button>
-            <button
-              onClick={() => setActiveTab("plan")}
-              className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
-                activeTab === "plan"
-                  ? "border-primary text-primary bg-primary/5"
-                  : "border-gray-300 text-gray-600 hover:bg-gray-50"
-              }`}
-            >
-              계획
-            </button>
-          </div>
-
-          {/* 탭 컨텐츠 */}
-          {activeTab === "summary" && (
-            <div>
-              <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
-                {t.content.summary}
-              </h2>
-              <div className="text-gray-700 font-Pretendard leading-relaxed">
-                <p>{t.content.summaryContent}</p>
-                <p className="mt-4">
-                  강의의 주요 내용을 요약한 내용이 여기에 표시됩니다. 핵심 개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === "quiz" && (
-            <div>
-              {/* 퀴즈 생성 완료 제목 */}
-              <h2 className="text-2xl font-Pretendard font-semibold text-gray-900 mb-6">
-                {t.content.quizGenerationComplete}
-              </h2>
-
-              {/* 퀴즈 목록 테이블 */}
-              <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
-                <table className="w-full border-collapse">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase w-16 border-b border-gray-200">
-                        {t.content.select}
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                        {t.content.problem}
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                        {t.content.answer}
-                      </th>
-                      <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                        {t.content.questionType}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {mockQuizDetails.map((quiz, index) => (
-                      <tr 
-                        key={quiz.id} 
-                        className={`hover:bg-gray-50 ${
-                          index !== mockQuizDetails.length - 1 ? "border-b border-gray-200" : ""
-                        }`}
-                      >
-                        <td className="px-4 py-3">
-                          <input
-                            type="checkbox"
-                            checked={selectedQuizzes.includes(quiz.id)}
-                            onChange={() => handleToggleQuiz(quiz.id)}
-                            className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                          />
-                        </td>
-                        <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
-                          {quiz.problem}
-                        </td>
-                        <td className="px-4 py-3">
-                          {visibleAnswers.includes(quiz.id) ? (
-                            <div className="flex flex-col gap-2">
-                              <div className="text-sm font-Pretendard text-gray-700">
-                                {quiz.answer}
-                              </div>
-                              <button
-                                onClick={() => handleToggleAnswer(quiz.id)}
-                                className="text-xs text-gray-500 hover:text-gray-700 font-Pretendard self-start"
-                              >
-                                {t.content.hideAnswer}
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => handleToggleAnswer(quiz.id)}
-                              className="px-3 py-1.5 text-sm font-Pretendard text-primary border border-primary rounded hover:bg-primary/5 transition-colors"
-                            >
-                              {t.content.showAnswer}
-                            </button>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
-                          {quiz.questionType}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* PDF 생성 버튼 */}
-              <div className="flex justify-end">
+              {/* 탭 버튼들 */}
+              <div className="flex gap-2 mb-6">
                 <button
-                  onClick={handleGeneratePDF}
-                  className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard font-semibold"
+                  onClick={() => setActiveTab("summary")}
+                  className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
+                    activeTab === "summary"
+                      ? "border-primary text-primary bg-primary/5"
+                      : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                  }`}
                 >
-                  {t.content.generatePDF}
+                  {t.content.summary}
+                </button>
+                <button
+                  onClick={() => setActiveTab("quiz")}
+                  className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
+                    activeTab === "quiz"
+                      ? "border-primary text-primary bg-primary/5"
+                      : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {t.content.quiz}
+                </button>
+                <button
+                  onClick={() => setActiveTab("plan")}
+                  className={`px-6 py-3 rounded border text-base font-Pretendard transition-colors ${
+                    activeTab === "plan"
+                      ? "border-primary text-primary bg-primary/5"
+                      : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  계획
                 </button>
               </div>
-            </div>
-          )}
 
-          {activeTab === "plan" && (
-            <div>
-              <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
-                계획
-              </h2>
-              <div className="text-gray-700 font-Pretendard leading-relaxed">
-                <p>학습 계획이 여기에 표시됩니다.</p>
-              </div>
-            </div>
-          )}
+              {/* 탭 컨텐츠 */}
+              {activeTab === "summary" && (
+                <div>
+                  <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
+                    {t.content.summary}
+                  </h2>
+                  <div className="text-gray-700 font-Pretendard leading-relaxed">
+                    <p>{t.content.summaryContent}</p>
+                    <p className="mt-4">
+                      강의의 주요 내용을 요약한 내용이 여기에 표시됩니다. 핵심
+                      개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "quiz" && (
+                <div>
+                  {/* 퀴즈 생성 완료 제목 */}
+                  <h2 className="text-2xl font-Pretendard font-semibold text-gray-900 mb-6">
+                    {t.content.quizGenerationComplete}
+                  </h2>
+
+                  {/* 로딩 상태 */}
+                  {isLoading ? (
+                    <div className="p-8 text-center text-gray-500 font-Pretendard">
+                      퀴즈를 불러오는 중...
+                    </div>
+                  ) : quizDetails.length === 0 ? (
+                    <div className="p-8 text-center text-gray-500 font-Pretendard">
+                      퀴즈 문제가 없습니다.
+                    </div>
+                  ) : (
+                    /* 퀴즈 목록 테이블 */
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
+                      <table className="w-full border-collapse">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase w-16 border-b border-gray-200">
+                              {t.content.select}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                              {t.content.problem}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                              {t.content.answer}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
+                              {t.content.questionType}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {quizDetails.map((quiz, index) => {
+                            const quizId = quiz?.id || index;
+                            const problem = quiz?.problem || "";
+                            const answer = quiz?.answer || "";
+                            const questionType = quiz?.questionType || "";
+
+                            return (
+                              <tr
+                                key={quizId}
+                                className={`hover:bg-gray-50 ${
+                                  index !== quizDetails.length - 1
+                                    ? "border-b border-gray-200"
+                                    : ""
+                                }`}
+                              >
+                                <td className="px-4 py-3">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedQuizzes.includes(quizId)}
+                                    onChange={() => handleToggleQuiz(quizId)}
+                                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                                  />
+                                </td>
+                                <td className="px-4 py-3 text-sm font-Pretendard text-gray-900">
+                                  {problem || "-"}
+                                </td>
+                                <td className="px-4 py-3">
+                                  {visibleAnswers.includes(quizId) ? (
+                                    <div className="flex flex-col gap-2">
+                                      <div className="text-sm font-Pretendard text-gray-700">
+                                        {answer || "-"}
+                                      </div>
+                                      <button
+                                        onClick={() =>
+                                          handleToggleAnswer(quizId)
+                                        }
+                                        className="text-xs text-gray-500 hover:text-gray-700 font-Pretendard self-start"
+                                      >
+                                        {t.content.hideAnswer}
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => handleToggleAnswer(quizId)}
+                                      className="px-3 py-1.5 text-sm font-Pretendard text-primary border border-primary rounded hover:bg-primary/5 transition-colors"
+                                    >
+                                      {t.content.showAnswer}
+                                    </button>
+                                  )}
+                                </td>
+                                <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
+                                  {questionType || "-"}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* PDF 생성 버튼 */}
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleGeneratePDF}
+                      className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard font-semibold"
+                    >
+                      {t.content.generatePDF}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "plan" && (
+                <div>
+                  <h2 className="text-xl font-Pretendard font-semibold text-gray-900 mb-4">
+                    계획
+                  </h2>
+                  <div className="text-gray-700 font-Pretendard leading-relaxed">
+                    <p>학습 계획이 여기에 표시됩니다.</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </main>
@@ -266,4 +360,3 @@ const QuizDetail = () => {
 };
 
 export default QuizDetail;
-
