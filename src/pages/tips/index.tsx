@@ -31,15 +31,33 @@ const TipsPage = () => {
   useEffect(() => {
     const fetchTips = async () => {
       setIsLoading(true);
+      // 에러 발생 시를 대비해 상태 초기화
+      setTips([]);
+      setSelectedCategory("");
+      setSelectedIdx("");
+      setExpandedCategories(new Set());
+      setExpandedIndexes(new Set());
+
       try {
         // 언어 코드를 그대로 전달 (KR, EN, CN, JP, VI 형식)
         const response = await getTipsAPI(language);
 
         // API 응답 확인을 위한 콘솔 출력
-        console.log("Tips API 응답:", response);
-        console.log("응답 타입:", typeof response);
-        console.log("배열 여부:", Array.isArray(response));
-        console.log("응답 구조:", JSON.stringify(response, null, 2));
+        console.log("[TipsPage] Tips API 응답:", response);
+        console.log("[TipsPage] 응답 타입:", typeof response);
+        console.log("[TipsPage] 배열 여부:", Array.isArray(response));
+        console.log("[TipsPage] 응답 구조:", JSON.stringify(response, null, 2));
+
+        // 응답이 없거나 빈 경우 처리
+        if (
+          !response ||
+          (typeof response === "object" && Object.keys(response).length === 0)
+        ) {
+          console.warn("[TipsPage] Tips 응답이 비어있습니다.");
+          setTips([]);
+          toast.error("Tips 데이터가 없습니다.");
+          return;
+        }
 
         // 응답 구조: 카테고리별로 이미 그룹화된 객체 형태
         // { "맛집": [...], "학교 생활 팁": [...], "유학생활 팁": [...] }
@@ -109,8 +127,17 @@ const TipsPage = () => {
               };
             });
         } else {
-          console.error("Tips 응답이 올바르지 않습니다:", response);
+          console.error("[TipsPage] Tips 응답이 올바르지 않습니다:", response);
           toast.error("Tips 데이터 형식이 올바르지 않습니다.");
+          setTips([]);
+          return;
+        }
+
+        // 빈 배열인 경우 처리
+        if (groupedArray.length === 0) {
+          console.warn("[TipsPage] 그룹화된 Tips가 없습니다.");
+          setTips([]);
+          toast.error("Tips 데이터가 없습니다.");
           return;
         }
 
@@ -129,7 +156,14 @@ const TipsPage = () => {
         }
       } catch (error) {
         const axiosError = error as AxiosError;
-        console.error("Tips 조회 실패:", axiosError);
+        console.error("[TipsPage] Tips 조회 실패:", axiosError);
+
+        // 에러 발생 시 상태 초기화
+        setTips([]);
+        setSelectedCategory("");
+        setSelectedIdx("");
+        setExpandedCategories(new Set());
+        setExpandedIndexes(new Set());
 
         // 상세한 에러 정보 로깅
         const errorData = axiosError?.response?.data as
@@ -140,7 +174,7 @@ const TipsPage = () => {
         const errorStatus = axiosError?.response?.status;
         const errorUrl = axiosError?.config?.url || axiosError?.config?.baseURL;
 
-        console.error("Tips API 에러 상세:", {
+        console.error("[TipsPage] Tips API 에러 상세:", {
           message: errorMessage,
           status: errorStatus,
           url: errorUrl,
@@ -154,7 +188,8 @@ const TipsPage = () => {
           toast.error("서버 오류가 발생했습니다.");
         } else if (
           axiosError?.code === "NETWORK_ERROR" ||
-          axiosError?.message?.includes("Network")
+          axiosError?.message?.includes("Network") ||
+          axiosError?.message?.includes("timeout")
         ) {
           toast.error("네트워크 연결을 확인해주세요.");
         } else {
@@ -214,6 +249,28 @@ const TipsPage = () => {
         <Sidebar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-gray-500 font-Pretendard">로딩 중...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // 로딩이 끝났는데 tips가 비어있는 경우
+  if (!isLoading && tips.length === 0) {
+    return (
+      <div className="flex h-screen bg-white overflow-hidden">
+        <Sidebar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-gray-500 font-Pretendard mb-2">
+              Tips 데이터를 불러올 수 없습니다.
+            </div>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-Pretendard text-sm"
+            >
+              새로고침
+            </button>
+          </div>
         </div>
       </div>
     );

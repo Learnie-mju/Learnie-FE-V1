@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
 import { useAuth } from "../../../store/useAuthStore";
 import { getFoldersAPI, type FolderResponse } from "../../../api/folder";
@@ -192,8 +192,8 @@ const Sidebar = ({
             )}
           </li>
           <li>
-            <a
-              href="/tips"
+            <Link
+              to="/tips"
               className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
             >
               <svg
@@ -210,7 +210,7 @@ const Sidebar = ({
                 />
               </svg>
               {t.home.sidebar.schoolTips}
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
