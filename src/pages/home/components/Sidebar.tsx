@@ -70,9 +70,13 @@ const Sidebar = ({
       <div className="p-6 border-b border-gray-200">
         <button
           onClick={() => navigate("/home")}
-          className="text-xl font-Pretendard font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer"
+          className="flex items-center hover:opacity-80 transition-opacity cursor-pointer"
         >
-          Orbit AI
+          <img
+            src="/logoImage.png"
+            alt="Orbit AI"
+            className="h-8 w-auto"
+          />
         </button>
       </div>
 
