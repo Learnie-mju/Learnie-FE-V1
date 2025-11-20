@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
 import { useAuth } from "../../../store/useAuthStore";
+import type { LectureUploadResponse } from "../../../api/lecture";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
 import UserMenu from "./UserMenu";
@@ -35,9 +36,13 @@ const mockQuizzes = [
 const ContentDetail = () => {
   const { contentId } = useParams<{ contentId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, setLanguage } = useLanguage();
   const { user } = useAuth();
   const t = translations[language].home;
+
+  // location.state에서 전달된 강의 데이터 가져오기
+  const lectureData = location.state?.lectureData as LectureUploadResponse | undefined;
 
   // 로그인된 경우 사용자 정보의 언어를 우선 사용
   useEffect(() => {
@@ -126,18 +131,16 @@ const ContentDetail = () => {
                 {t.content.translation}
               </h2>
               <div className="space-y-4 text-gray-700 font-Pretendard">
-                <p className="leading-relaxed">
-                  강의 녹음본의 번역본이 여기에 표시됩니다. 원본 강의 내용을
-                  모국어로 번역한 텍스트를 확인할 수 있습니다.
-                </p>
-                <p className="leading-relaxed">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <p className="leading-relaxed">
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
+                {lectureData?.content ? (
+                  <div className="leading-relaxed whitespace-pre-wrap">
+                    {lectureData.content}
+                  </div>
+                ) : (
+                  <p className="leading-relaxed text-gray-500">
+                    강의 녹음본의 번역본이 여기에 표시됩니다. 원본 강의 내용을
+                    모국어로 번역한 텍스트를 확인할 수 있습니다.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -185,11 +188,19 @@ const ContentDetail = () => {
                       {t.content.summary}
                     </h2>
                     <div className="text-gray-700 font-Pretendard leading-relaxed">
-                      <p>{t.content.summaryContent}</p>
-                      <p className="mt-4">
-                        강의의 주요 내용을 요약한 내용이 여기에 표시됩니다. 핵심
-                        개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
-                      </p>
+                      {lectureData?.summary ? (
+                        <div className="whitespace-pre-wrap">
+                          {lectureData.summary}
+                        </div>
+                      ) : (
+                        <>
+                          <p>{t.content.summaryContent}</p>
+                          <p className="mt-4">
+                            강의의 주요 내용을 요약한 내용이 여기에 표시됩니다. 핵심
+                            개념과 중요한 포인트를 빠르게 파악할 수 있습니다.
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}

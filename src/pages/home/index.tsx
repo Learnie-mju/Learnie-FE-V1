@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage, translations } from "../../store/useLanguageStore";
 import { useAuth } from "../../store/useAuthStore";
+import { uploadLectureAPI } from "../../api/lecture";
 import Sidebar from "./components/Sidebar";
 import UploadModal from "./components/UploadModal";
 import UploadSkeleton from "./components/UploadSkeleton";
@@ -214,27 +215,24 @@ const HomePage = () => {
             }
           }}
           onConfirm={async (classTitle, files) => {
+            if (!user || !user.id) {
+              alert("로그인이 필요합니다.");
+              return;
+            }
+
             try {
               setIsModalOpen(false);
               setIsUploading(true);
               setIsUploadComplete(false);
               setShowSuccessMessage(false);
 
-              // TODO: 실제 파일 업로드 API 호출
-              // const formData = new FormData();
-              // formData.append("title", classTitle);
-              // files.forEach((file) => {
-              //   formData.append("files", file);
-              // });
-              // const response = await axiosInstance.post("/api/upload", formData, {
-              //   headers: {
-              //     "Content-Type": "multipart/form-data",
-              //   },
-              // });
-
-              // Mock: 업로드 시뮬레이션 (5초 - 실제 업로드와 번역 처리 시간 시뮬레이션)
-              console.log("업로드 확인:", { classTitle, files });
-              await new Promise((resolve) => setTimeout(resolve, 5000));
+              // 첫 번째 파일만 업로드 (API는 단일 파일만 받음)
+              const file = files[0];
+              const response = await uploadLectureAPI(
+                user.id,
+                classTitle,
+                file
+              );
 
               // 업로드 완료
               setIsUploadComplete(true);
@@ -246,8 +244,13 @@ const HomePage = () => {
 
               // 축하 메시지 표시 후 콘텐츠 상세 페이지로 이동
               setTimeout(() => {
-                const mockContentId = Date.now().toString();
-                navigate(`/home/content/${mockContentId}`);
+                // 응답 데이터를 state로 전달하기 위해 URL에 포함하거나,
+                // 전역 상태나 localStorage에 저장
+                navigate(`/home/content/${response.lectureId}`, {
+                  state: {
+                    lectureData: response,
+                  },
+                });
 
                 // 상태 초기화
                 setIsUploading(false);
@@ -257,7 +260,51 @@ const HomePage = () => {
               }, 3000);
             } catch (error) {
               console.error("파일 업로드 실패:", error);
-              alert("파일 업로드에 실패했습니다.");
+
+              // 에러 메시지 추출
+              let errorMessage = "파일 업로드에 실패했습니다.";
+
+              if (error instanceof Error) {
+                if (
+                  error.message.includes("Maximum upload size") ||
+                  error.message.includes("너무 큽니다")
+                ) {
+                  errorMessage = error.message;
+                } else {
+                  errorMessage = error.message;
+                }
+              } else if (
+                error &&
+                typeof error === "object" &&
+                "response" in error
+              ) {
+                const axiosError = error as {
+                  response?: {
+                    status?: number;
+                    data?: { message?: string };
+                  };
+                  message?: string;
+                };
+
+                if (
+                  axiosError.response?.status === 413 ||
+                  axiosError.message?.includes("Maximum upload size")
+                ) {
+                  errorMessage =
+                    "파일 크기가 너무 큽니다. 더 작은 파일을 업로드해주세요.";
+                } else if (
+                  axiosError.response?.status === 415 ||
+                  axiosError.message?.includes("Content-Type")
+                ) {
+                  errorMessage = "지원하지 않는 파일 형식입니다.";
+                } else if (axiosError.response?.data?.message) {
+                  errorMessage = axiosError.response.data.message;
+                } else if (axiosError.message) {
+                  errorMessage = axiosError.message;
+                }
+              }
+
+              alert(errorMessage);
               setIsUploading(false);
               setIsUploadComplete(false);
               setShowSuccessMessage(false);

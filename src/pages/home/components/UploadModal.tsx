@@ -8,32 +8,53 @@ interface UploadModalProps {
   files: File[];
 }
 
-const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) => {
+const UploadModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  files,
+}: UploadModalProps) => {
   const { language } = useLanguage();
   const t = translations[language].home.uploadModal;
   const [classTitle, setClassTitle] = useState("");
 
   useEffect(() => {
     if (isOpen) {
+      // 모달이 열릴 때 제목 초기화
       setClassTitle("");
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handleConfirm = () => {
-    if (classTitle.trim() && files.length > 0) {
-      onConfirm(classTitle.trim(), files);
-      onClose();
-    }
-  };
+  // 최대 파일 크기 (100MB)
+  const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+  const handleConfirm = () => {
+    if (!classTitle.trim()) {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+
+    if (files.length === 0) {
+      alert("파일을 선택해주세요.");
+      return;
+    }
+
+    // 파일 크기 검증
+    const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+    if (oversizedFiles.length > 0) {
+      const fileNames = oversizedFiles.map((f) => f.name).join(", ");
+      alert(
+        `다음 파일의 크기가 너무 큽니다 (최대 ${
+          MAX_FILE_SIZE / (1024 * 1024)
+        }MB):\n${fileNames}`
+      );
+      return;
+    }
+
+    onConfirm(classTitle.trim(), files);
+    onClose();
   };
 
   return (
@@ -41,13 +62,13 @@ const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) =>
       <div className="bg-white rounded-lg p-8 w-full max-w-md shadow-xl">
         {/* 파일 정보 - 점선 테두리 박스 */}
         <div className="mb-6">
-          <div className="border-2 border-dashed border-primary/50 rounded-lg px-4 py-6 min-h-[80px] flex items-center justify-center">
+          <div className="border-2 border-dashed border-primary/50 rounded-lg px-4 py-6 min-h-[80px] flex items-center justify-center bg-gray-50/50">
             {files.length > 0 ? (
-              <div className="text-center">
+              <div className="text-center w-full">
                 {files.map((file, index) => (
                   <div
                     key={index}
-                    className="text-primary font-Pretendard text-sm font-medium"
+                    className="text-primary font-Pretendard text-sm font-medium break-word"
                   >
                     {file.name}
                   </div>
@@ -67,7 +88,7 @@ const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) =>
             type="text"
             value={classTitle}
             onChange={(e) => setClassTitle(e.target.value)}
-            placeholder="제목을 입력해 주세요"
+            placeholder={t.classTitle}
             className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-800 font-Pretendard focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           />
         </div>
@@ -94,4 +115,3 @@ const UploadModal = ({ isOpen, onClose, onConfirm, files }: UploadModalProps) =>
 };
 
 export default UploadModal;
-

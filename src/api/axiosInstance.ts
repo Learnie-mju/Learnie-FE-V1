@@ -21,6 +21,12 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // FormData인 경우 Content-Type 헤더를 제거하여 axios가 자동으로 boundary 포함하여 설정하도록 함
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
+
     return config;
   },
   (error) => {
@@ -38,6 +44,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem("aiTutorToken");
       localStorage.removeItem("userLanguage");
+      localStorage.removeItem("userInfo");
       // 로그인 페이지로 리다이렉트는 컴포넌트에서 처리
     }
     return Promise.reject(error);

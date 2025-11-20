@@ -26,9 +26,42 @@ interface AuthState {
   logout: () => void;
 }
 
+// localStorage에서 사용자 정보 불러오기
+const getStoredUser = (): UserInfo | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const storedUser = localStorage.getItem("userInfo");
+    if (storedUser) {
+      return JSON.parse(storedUser) as UserInfo;
+    }
+  } catch (error) {
+    console.error("Failed to parse stored user info:", error);
+  }
+
+  return null;
+};
+
+// localStorage에서 인증 상태 확인
+const getStoredAuthStatus = ():
+  | "unauthenticated"
+  | "loading"
+  | "authenticated" => {
+  if (typeof window === "undefined") return "unauthenticated";
+
+  const token = localStorage.getItem("aiTutorToken");
+  const userInfo = localStorage.getItem("userInfo");
+
+  if (token && userInfo) {
+    return "authenticated";
+  }
+
+  return "unauthenticated";
+};
+
 export const useAuth = create<AuthState>((set) => ({
-  user: null,
-  status: "unauthenticated",
+  user: getStoredUser(),
+  status: getStoredAuthStatus(),
   error: null,
 
   signup: async (
@@ -173,13 +206,17 @@ export const useAuth = create<AuthState>((set) => ({
         language: userLanguage,
       };
 
-      // 언어를 localStorage에 저장하고 언어 스토어도 즉시 업데이트
+      // 사용자 정보와 언어를 localStorage에 저장
+      localStorage.setItem("userInfo", JSON.stringify(userData));
       localStorage.setItem("userLanguage", userLanguage);
+
+      // 언어 스토어도 즉시 업데이트
       useLanguage.getState().setLanguage(userLanguage);
 
       // 디버깅용 로그
       if (import.meta.env.DEV) {
         console.log("로그인 완료 - 설정된 언어:", userLanguage);
+        console.log("사용자 정보:", userData);
         console.log(
           "localStorage userLanguage:",
           localStorage.getItem("userLanguage")
@@ -232,6 +269,7 @@ export const useAuth = create<AuthState>((set) => ({
       // localStorage 정리
       localStorage.removeItem("aiTutorToken");
       localStorage.removeItem("userLanguage");
+      localStorage.removeItem("userInfo");
 
       set({
         user: null,
