@@ -1,0 +1,94 @@
+import { useEffect, useState } from "react";
+import { useLanguage, translations } from "../../../store/useLanguageStore";
+
+// 각 메시지가 나타나는 딜레이 (밀리초)
+const DELAY_BETWEEN_MESSAGES = 600;
+
+const LANGUAGE_OPTIONS = [
+  { code: "ko" as const, label: "한국어" },
+  { code: "en" as const, label: "English" },
+  { code: "zh" as const, label: "中文" },
+] as const;
+
+const LoginIntro = () => {
+  const { language, setLanguage } = useLanguage();
+  const [visibleMessages, setVisibleMessages] = useState<number[]>([]);
+
+  const messages = translations[language].intro;
+  const title = translations[language].title;
+
+  // 메시지 애니메이션 (언어 변경 시 key prop으로 컴포넌트가 재마운트되므로 자동 초기화됨)
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    // 각 메시지를 순차적으로 표시
+    messages.forEach((_, index) => {
+      const timer = setTimeout(() => {
+        setVisibleMessages((prev) => {
+          if (!prev.includes(index)) {
+            return [...prev, index];
+          }
+          return prev;
+        });
+      }, index * DELAY_BETWEEN_MESSAGES);
+      timers.push(timer);
+    });
+
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer));
+    };
+  }, [messages]);
+
+  return (
+    <div className="text-white w-full bg-black-90 relative overflow-hidden">
+      {/* 헤더 - LectureLen 및 언어 선택 */}
+      <div className="absolute top-0 left-0 right-0 z-20 py-8 px-8 md:px-16 flex justify-between items-start">
+        <h1 className="text-2xl md:text-3xl font-Pretendard font-semibold text-white">
+          {title}
+        </h1>
+
+        {/* 언어 선택 버튼 */}
+        <div className="flex gap-2">
+          {LANGUAGE_OPTIONS.map((option) => (
+            <button
+              key={option.code}
+              onClick={() => setLanguage(option.code)}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                language === option.code
+                  ? "bg-primary text-white"
+                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 안내 문구 영역 */}
+      <div className="h-full flex flex-col justify-center px-8 md:px-16 items-start">
+        <div className="flex flex-col relative justify-start items-start w-full max-w-3xl">
+          <div className="space-y-5 md:space-y-6">
+            {messages.map((message, index) => {
+              const isVisible = visibleMessages.includes(index);
+              return (
+                <p
+                  key={index}
+                  className={`font-Pretendard font-normal text-lg md:text-xl lg:text-2xl leading-relaxed text-gray-100 transition-all duration-700 ${
+                    isVisible
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 translate-y-4"
+                  }`}
+                >
+                  {message}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginIntro;
