@@ -64,12 +64,13 @@ export interface QuizDetailRequest {
   quizId: number;
 }
 
-// 퀴즈 상세 항목 (문제)
+// 퀴즈 상세 항목 (문제) - API 응답 구조
 export interface QuizDetailItem {
-  id: number;
-  problem: string;
-  answer: string;
-  questionType: string;
+  quizId: number;
+  lectureId: number;
+  question: string;
+  answer?: string;
+  questionType?: string;
 }
 
 // 퀴즈 상세 조회 API (POST 방식)
@@ -95,8 +96,9 @@ export const getQuizDetailAPI = async (
   console.log("[퀴즈 상세 조회 API] 응답 데이터 (response.data):", response.data);
   console.log("[퀴즈 상세 조회 API] 응답 데이터 JSON:", JSON.stringify(response.data, null, 2));
   console.log("[퀴즈 상세 조회 API] 문제:", {
-    id: response.data.id,
-    problem: response.data.problem,
+    quizId: response.data.quizId,
+    lectureId: response.data.lectureId,
+    question: response.data.question,
     answer: response.data.answer,
     questionType: response.data.questionType,
   });

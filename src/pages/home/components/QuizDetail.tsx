@@ -70,8 +70,9 @@ const QuizDetail = () => {
         // 각 퀴즈 항목 상세 로그
         details.forEach((detail, idx) => {
           console.log(`[QuizDetail] 퀴즈 #${idx + 1}:`, {
-            id: detail?.id,
-            problem: detail?.problem,
+            quizId: detail?.quizId,
+            lectureId: detail?.lectureId,
+            question: detail?.question,
             answer: detail?.answer,
             questionType: detail?.questionType,
             전체데이터: detail,
@@ -269,10 +270,11 @@ const QuizDetail = () => {
                         </thead>
                         <tbody>
                           {quizDetails.map((quiz, index) => {
-                            const quizId = quiz?.id || index;
-                            const problem = quiz?.problem || "";
+                            const quizId = quiz?.quizId || index;
+                            const problem = quiz?.question || "";
                             const answer = quiz?.answer || "";
-                            const questionType = quiz?.questionType || "";
+                            const questionType =
+                              quiz?.questionType || quizType || "";
 
                             return (
                               <tr
