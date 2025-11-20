@@ -125,7 +125,14 @@ const QuizDetail = () => {
             <div className="flex-1 border-r border-gray-200 pr-8">
               <div className="flex items-center gap-4 mb-6">
                 <button
-                  onClick={() => navigate("/home")}
+                  onClick={() => {
+                    // lectureData가 있으면 해당 강의 상세 페이지로, 없으면 홈으로
+                    if (lectureData?.lectureId) {
+                      navigate(`/home/content/${lectureData.lectureId}`);
+                    } else {
+                      navigate(-1); // 브라우저 히스토리에서 이전 페이지로
+                    }
+                  }}
                   className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
                 >
                   <svg
@@ -178,6 +185,38 @@ const QuizDetail = () => {
 
             {/* 오른쪽: 퀴즈 상세 */}
             <div className="flex-1 pl-8">
+              {/* 뒤로가기 버튼 */}
+              <div className="flex items-center gap-4 mb-6">
+                <button
+                  onClick={() => {
+                    // lectureData가 있으면 해당 강의 상세 페이지로, 없으면 이전 페이지로
+                    if (lectureData?.lectureId) {
+                      navigate(`/home/content/${lectureData.lectureId}`);
+                    } else {
+                      navigate(-1); // 브라우저 히스토리에서 이전 페이지로
+                    }
+                  }}
+                  className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+                >
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <h2 className="text-xl font-Pretendard font-semibold text-gray-900">
+                  {t.content.quiz}
+                </h2>
+              </div>
+
               {/* 탭 버튼들 */}
               <div className="flex gap-2 mb-6">
                 <button

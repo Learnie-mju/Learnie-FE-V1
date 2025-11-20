@@ -534,9 +534,6 @@ const ContentDetail = () => {
                                 <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
                                   {t.content.createdAt}
                                 </th>
-                                <th className="px-4 py-3 text-left text-xs font-Pretendard font-semibold text-gray-700 uppercase border-b border-gray-200">
-                                  {t.content.download}
-                                </th>
                               </tr>
                             </thead>
                             <tbody>
@@ -575,17 +572,6 @@ const ContentDetail = () => {
                                     </td>
                                     <td className="px-4 py-3 text-sm font-Pretendard text-gray-700">
                                       {createdAt}
-                                    </td>
-                                    <td className="px-4 py-3">
-                                      <button
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          console.log("다운로드", quizId);
-                                        }}
-                                        className="text-primary hover:text-primary/80 font-Pretendard text-sm"
-                                      >
-                                        {t.content.download}
-                                      </button>
                                     </td>
                                   </tr>
                                 );
