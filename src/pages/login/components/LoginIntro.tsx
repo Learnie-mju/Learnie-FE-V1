@@ -17,7 +17,6 @@ const LoginIntro = () => {
   const [visibleMessages, setVisibleMessages] = useState<number[]>([]);
 
   const messages = translations[language].intro;
-  const title = translations[language].title;
 
   // 메시지 애니메이션 (언어 변경 시 key prop으로 컴포넌트가 재마운트되므로 자동 초기화됨)
   useEffect(() => {
