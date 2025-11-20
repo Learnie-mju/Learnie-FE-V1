@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useAuth } from '../store/useAuthStore';
+import { useState } from "react";
+import { useAuth } from "../store/useAuthStore";
 
 const LoginCTA = () => {
   const { login, status, error } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const submitLogin = async () => {
     await login(email, password);
@@ -29,7 +29,7 @@ const LoginCTA = () => {
         onClick={submitLogin}
         className="bg-primary px-6 py-3 rounded-lg font-semibold text-white"
       >
-        {status === 'loading' ? '로그인 중...' : '로그인'}
+        {status === "loading" ? "로그인 중..." : "로그인"}
       </button>
 
       {error && <p className="text-red-400 text-sm">{error}</p>}

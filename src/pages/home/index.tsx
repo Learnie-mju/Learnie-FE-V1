@@ -4,6 +4,7 @@ import { useLanguage, translations } from "../../store/useLanguageStore";
 import Sidebar from "./components/Sidebar";
 import UploadModal from "./components/UploadModal";
 import UploadSkeleton from "./components/UploadSkeleton";
+import UserMenu from "./components/UserMenu";
 
 const LANGUAGE_OPTIONS = [
   { code: "ko" as const, label: "한국어" },
@@ -56,6 +57,9 @@ const HomePage = () => {
                 </button>
               ))}
             </div>
+
+            {/* 마이페이지 메뉴 */}
+            <UserMenu />
           </div>
         </header>
 

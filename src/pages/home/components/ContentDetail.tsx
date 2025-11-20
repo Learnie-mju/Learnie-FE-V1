@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage, translations } from "../../../store/useLanguageStore";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
+import UserMenu from "./UserMenu";
 
 const LANGUAGE_OPTIONS = [
   { code: "ko" as const, label: "한국어" },
@@ -102,6 +103,9 @@ const ContentDetail = () => {
                 </button>
               ))}
             </div>
+            
+            {/* 마이페이지 메뉴 */}
+            <UserMenu />
           </div>
         </header>
 
