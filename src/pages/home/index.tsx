@@ -29,6 +29,7 @@ const HomePage = () => {
   const { language, setLanguage } = useLanguage();
   const { user } = useAuth();
   const t = translations[language].home;
+  const toastT = translations[language].toast;
 
   // 로그인된 경우 사용자 정보의 언어를 우선 사용 (백엔드에서 받은 언어)
   useEffect(() => {
@@ -65,7 +66,7 @@ const HomePage = () => {
   // 폴더 생성 핸들러
   const handleCreateFolder = async (folderName: string) => {
     if (!user?.id) {
-      toast.error("로그인이 필요합니다.");
+      toast.error(toastT.loginRequired);
       return;
     }
 
@@ -78,10 +79,10 @@ const HomePage = () => {
       // 생성된 폴더 자동 선택
       setSelectedFolderId(newFolder.folderId);
       setSelectedFolderName(newFolder.folderName);
-      toast.success("폴더가 생성되었습니다.");
+      toast.success(toastT.folderCreated);
     } catch (error) {
       console.error("폴더 생성 실패:", error);
-      toast.error("폴더 생성에 실패했습니다.");
+      toast.error(toastT.folderCreationFailed);
     } finally {
       setIsCreatingFolder(false);
     }
@@ -129,7 +130,7 @@ const HomePage = () => {
         }
       } catch (error) {
         console.error("강의 목록 조회 실패:", error);
-        toast.error("강의 목록을 불러오는데 실패했습니다.");
+        toast.error(toastT.failedToLoadLectures);
         setLectures([]);
       } finally {
         setIsLoadingLectures(false);
@@ -436,7 +437,7 @@ const HomePage = () => {
           }}
           onConfirm={async (classTitle, files, folderId) => {
             if (!user || !user.id) {
-              toast.error("로그인이 필요합니다.");
+              toast.error(toastT.loginRequired);
               return;
             }
 
@@ -526,16 +527,23 @@ const HomePage = () => {
               console.error("파일 업로드 실패:", error);
 
               // 에러 메시지 추출
-              let errorMessage = "파일 업로드에 실패했습니다.";
+              const toastMessages = toastT as Record<string, string>;
+              let errorMessage =
+                toastMessages.fileUploadFailed || "파일 업로드에 실패했습니다.";
 
               if (error instanceof Error) {
                 if (
                   error.message.includes("Maximum upload size") ||
                   error.message.includes("너무 큽니다")
                 ) {
-                  errorMessage = error.message;
+                  errorMessage =
+                    toastMessages.fileTooLarge ||
+                    "파일 크기가 너무 큽니다. 더 작은 파일을 업로드해주세요.";
                 } else {
-                  errorMessage = error.message;
+                  errorMessage =
+                    error.message ||
+                    toastMessages.fileUploadFailed ||
+                    "파일 업로드에 실패했습니다.";
                 }
               } else if (
                 error &&
@@ -555,12 +563,15 @@ const HomePage = () => {
                   axiosError.message?.includes("Maximum upload size")
                 ) {
                   errorMessage =
+                    toastMessages.fileTooLarge ||
                     "파일 크기가 너무 큽니다. 더 작은 파일을 업로드해주세요.";
                 } else if (
                   axiosError.response?.status === 415 ||
                   axiosError.message?.includes("Content-Type")
                 ) {
-                  errorMessage = "지원하지 않는 파일 형식입니다.";
+                  errorMessage =
+                    toastMessages.unsupportedFileType ||
+                    "지원하지 않는 파일 형식입니다.";
                 } else if (axiosError.response?.data?.message) {
                   errorMessage = axiosError.response.data.message;
                 } else if (axiosError.message) {

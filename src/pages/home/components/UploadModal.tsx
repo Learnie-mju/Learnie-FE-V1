@@ -27,6 +27,7 @@ const UploadModal = ({
   const { language } = useLanguage();
   const { user } = useAuth();
   const t = translations[language].home.uploadModal;
+  const toastT = translations[language].toast;
   const [classTitle, setClassTitle] = useState("");
   const [folders, setFolders] = useState<FolderResponse[]>([]);
   const [selectedFolderId, setSelectedFolderId] = useState<number | null>(null);
@@ -69,7 +70,7 @@ const UploadModal = ({
   // 폴더 생성 핸들러
   const handleCreateFolder = async (folderName: string) => {
     if (!user?.id) {
-      toast.error("로그인이 필요합니다.");
+      toast.error(toastT.loginRequired);
       return;
     }
 
@@ -84,10 +85,10 @@ const UploadModal = ({
       setSelectedFolderId(newFolder.folderId);
       setSelectedFolderName(newFolder.folderName);
       setIsFolderListOpen(false);
-      toast.success("폴더가 생성되었습니다.");
+      toast.success(toastT.folderCreated);
     } catch (error) {
       console.error("폴더 생성 실패:", error);
-      toast.error("폴더 생성에 실패했습니다.");
+      toast.error(toastT.folderCreationFailed);
     } finally {
       setIsCreatingFolder(false);
     }
@@ -100,17 +101,17 @@ const UploadModal = ({
 
   const handleConfirm = () => {
     if (!selectedFolderId) {
-      toast.error("먼저 폴더를 선택하거나 생성해주세요.");
+      toast.error(toastT.selectOrCreateFolder);
       return;
     }
 
     if (!classTitle.trim()) {
-      toast.error("제목을 입력해주세요.");
+      toast.error(toastT.enterTitle);
       return;
     }
 
     if (files.length === 0) {
-      toast.error("파일을 선택해주세요.");
+      toast.error(toastT.selectFile);
       return;
     }
 
@@ -118,10 +119,12 @@ const UploadModal = ({
     const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
     if (oversizedFiles.length > 0) {
       const fileNames = oversizedFiles.map((f) => f.name).join(", ");
+      const toastMessages = toastT as Record<string, string>;
       toast.error(
-        `다음 파일의 크기가 너무 큽니다 (최대 ${
-          MAX_FILE_SIZE / (1024 * 1024)
-        }MB):\n${fileNames}`
+        `${
+          toastMessages.fileTooLarge ||
+          "파일 크기가 너무 큽니다. 더 작은 파일을 업로드해주세요."
+        } (최대 ${MAX_FILE_SIZE / (1024 * 1024)}MB):\n${fileNames}`
       );
       return;
     }

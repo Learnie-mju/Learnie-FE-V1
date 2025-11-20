@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLanguage } from "../../store/useLanguageStore";
+import { useLanguage, translations } from "../../store/useLanguageStore";
 import { getTipsAPI, type TipResponse } from "../../api/tips";
 import Sidebar from "../home/components/Sidebar";
 import toast from "react-hot-toast";
@@ -16,6 +16,7 @@ interface GroupedTip {
 
 const TipsPage = () => {
   const { language } = useLanguage();
+  const t = translations[language].toast;
   const [tips, setTips] = useState<GroupedTip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -55,7 +56,7 @@ const TipsPage = () => {
         ) {
           console.warn("[TipsPage] Tips 응답이 비어있습니다.");
           setTips([]);
-          toast.error("Tips 데이터가 없습니다.");
+          toast.error(t.noTipsData);
           return;
         }
 
@@ -128,7 +129,7 @@ const TipsPage = () => {
             });
         } else {
           console.error("[TipsPage] Tips 응답이 올바르지 않습니다:", response);
-          toast.error("Tips 데이터 형식이 올바르지 않습니다.");
+          toast.error(t.invalidTipsFormat);
           setTips([]);
           return;
         }
@@ -137,7 +138,7 @@ const TipsPage = () => {
         if (groupedArray.length === 0) {
           console.warn("[TipsPage] 그룹화된 Tips가 없습니다.");
           setTips([]);
-          toast.error("Tips 데이터가 없습니다.");
+          toast.error(t.noTipsData);
           return;
         }
 
@@ -183,18 +184,19 @@ const TipsPage = () => {
 
         // 사용자에게 더 구체적인 에러 메시지 표시
         if (errorStatus === 404) {
-          toast.error("Tips를 찾을 수 없습니다.");
+          toast.error(t.tipsNotFound);
         } else if (errorStatus === 500) {
-          toast.error("서버 오류가 발생했습니다.");
+          toast.error(t.serverError);
         } else if (
           axiosError?.code === "NETWORK_ERROR" ||
           axiosError?.message?.includes("Network") ||
           axiosError?.message?.includes("timeout")
         ) {
-          toast.error("네트워크 연결을 확인해주세요.");
+          toast.error(t.networkError);
         } else {
+          const toastMessages = t as Record<string, string>;
           toast.error(
-            `Tips를 불러오는데 실패했습니다. (${errorStatus || "오류"})`
+            toastMessages.tipsLoadFailed || "Tips를 불러오는데 실패했습니다."
           );
         }
       } finally {

@@ -9,6 +9,7 @@ const UserMenu = () => {
   const { user, logout } = useAuth();
   const { language } = useLanguage();
   const t = translations[language].userMenu;
+  const toastT = translations[language].toast;
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -41,19 +42,19 @@ const UserMenu = () => {
       // TODO: 회원 삭제 API 호출
       // await deleteUserAPI();
       
-      toast.success("회원이 삭제되었습니다.");
+      toast.success(toastT.accountDeleted);
       setIsDeleteModalOpen(false);
       await logout();
       navigate("/login", { replace: true });
     } catch (error) {
-      toast.error("회원 삭제에 실패했습니다.");
+      toast.error(toastT.accountDeletionFailed);
       console.error("회원 삭제 실패:", error);
     }
   };
 
   const handleEditProfile = () => {
     // TODO: 회원 수정 모달 또는 페이지로 이동
-    toast.success("회원 수정 기능은 준비 중입니다.");
+    toast.success(toastT.editProfileComingSoon);
     setIsOpen(false);
   };
 

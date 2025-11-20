@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import type { Language } from "./useLanguageStore";
-import { useLanguage } from "./useLanguageStore";
+import { useLanguage, translations } from "./useLanguageStore";
 import { signupAPI, loginAPI, logoutAPI } from "../api/auth";
 
 interface UserInfo {
@@ -111,8 +111,8 @@ export const useAuth = create<AuthState>((set) => ({
         error: null,
       });
 
-      // 성공 토스트 표시
-      toast.success("회원가입이 완료되었습니다!");
+      // 성공 토스트 표시 (설정된 언어 사용)
+      toast.success(translations[finalLanguage].toast.signupSuccess);
     } catch (err) {
       // API 에러 메시지 추출
       let errorMessage = "회원가입에 실패했습니다. 다시 시도해주세요.";
@@ -230,8 +230,8 @@ export const useAuth = create<AuthState>((set) => ({
         error: null,
       });
 
-      // 성공 토스트 표시
-      toast.success("로그인에 성공했습니다!");
+      // 성공 토스트 표시 (설정된 언어 사용)
+      toast.success(translations[userLanguage].toast.loginSuccess);
     } catch (err) {
       // API 에러 메시지 추출
       let errorMessage = "로그인에 실패했습니다. 다시 시도해주세요.";
@@ -278,7 +278,8 @@ export const useAuth = create<AuthState>((set) => ({
       });
 
       // 로그아웃 토스트 표시
-      toast.success("로그아웃되었습니다.");
+      const currentLanguage = useLanguage.getState().language;
+      toast.success(translations[currentLanguage].toast.logoutSuccess);
     }
   },
 }));

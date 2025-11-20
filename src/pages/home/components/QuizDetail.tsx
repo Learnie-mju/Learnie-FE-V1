@@ -15,6 +15,7 @@ const QuizDetail = () => {
   const location = useLocation();
   const { language } = useLanguage();
   const t = translations[language].home;
+  const toastT = translations[language].toast;
 
   // location.state에서 전달된 데이터 가져오기
   const quizIds = location.state?.quizIds as number[] | undefined;
@@ -40,13 +41,13 @@ const QuizDetail = () => {
       }
 
       if (!quizIds || !Array.isArray(quizIds) || quizIds.length === 0) {
-        toast.error("퀴즈 ID가 없습니다.");
+        toast.error(toastT.noQuizId);
         navigate("/home");
         return;
       }
 
       if (!quizType) {
-        toast.error("퀴즈 유형이 없습니다.");
+        toast.error(toastT.noQuizType);
         navigate("/home");
         return;
       }
@@ -87,7 +88,7 @@ const QuizDetail = () => {
         setQuizDetails(details);
       } catch (error) {
         console.error("[QuizDetail] 퀴즈 상세 조회 실패:", error);
-        toast.error("퀴즈 상세 정보를 불러오는데 실패했습니다.");
+        toast.error(toastT.failedToLoadQuizDetail);
       } finally {
         setIsLoading(false);
       }

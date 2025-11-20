@@ -58,7 +58,7 @@ const ContentDetail = () => {
       try {
         const lectureId = parseInt(contentId, 10);
         if (isNaN(lectureId)) {
-          toast.error("잘못된 강의 ID입니다.");
+          toast.error(t.toast.invalidLectureId);
           navigate("/home");
           return;
         }
@@ -67,7 +67,7 @@ const ContentDetail = () => {
         setLectureData(data);
       } catch (error) {
         console.error("강의 상세 조회 실패:", error);
-        toast.error("강의 정보를 불러오는데 실패했습니다.");
+        toast.error(t.toast.failedToLoadLecture);
         navigate("/home");
       } finally {
         setIsLoading(false);
@@ -118,7 +118,7 @@ const ContentDetail = () => {
         console.log("[ContentDetail] 퀴즈 리스트 상태 업데이트 완료");
       } catch (error) {
         console.error("[ContentDetail] 퀴즈 리스트 조회 실패:", error);
-        toast.error("퀴즈 리스트를 불러오는데 실패했습니다.");
+        toast.error(t.toast.failedToLoadQuizList);
       } finally {
         setIsLoadingQuizList(false);
       }
@@ -451,12 +451,12 @@ const ContentDetail = () => {
                         <button
                           onClick={async () => {
                             if (!difficulty || !questionType) {
-                              toast.error("난이도와 문제 유형을 선택해주세요.");
+                              toast.error(t.toast.selectDifficultyAndType);
                               return;
                             }
 
                             if (!lectureData?.lectureId) {
-                              toast.error("강의 정보를 불러올 수 없습니다.");
+                              toast.error(t.toast.noLectureData);
                               return;
                             }
 
@@ -479,7 +479,7 @@ const ContentDetail = () => {
                                 difficulty // "high" | "medium" | "low"
                               );
 
-                              toast.success("퀴즈가 생성되었습니다!");
+                              toast.success(t.toast.quizCreated);
                               
                               // 퀴즈 목록 새로고침
                               try {
@@ -492,7 +492,7 @@ const ContentDetail = () => {
                               }
                             } catch (error) {
                               console.error("퀴즈 생성 실패:", error);
-                              toast.error("퀴즈 생성에 실패했습니다.");
+                              toast.error(t.toast.quizCreationFailed);
                             } finally {
                               setIsGeneratingQuiz(false);
                             }
@@ -595,7 +595,7 @@ const ContentDetail = () => {
                         <button
                           onClick={async () => {
                             if (!lectureData?.lectureId) {
-                              toast.error(t.content.review?.noLectureData || "강의 정보를 불러올 수 없습니다.");
+                              toast.error(t.toast.noLectureData);
                               return;
                             }
 
@@ -615,10 +615,10 @@ const ContentDetail = () => {
 
                               console.log("[ContentDetail] 생성된 리뷰:", createdReview);
                               setReview(createdReview);
-                              toast.success(t.content.review?.success || "리뷰가 생성되었습니다!");
+                              toast.success(t.content.review?.success || t.toast.quizCreated);
                             } catch (error) {
                               console.error("[ContentDetail] 리뷰 생성 실패:", error);
-                              toast.error(t.content.review?.error || "리뷰 생성에 실패했습니다.");
+                              toast.error(t.content.review?.error || t.toast.quizCreationFailed);
                             } finally {
                               setIsGeneratingReview(false);
                             }
