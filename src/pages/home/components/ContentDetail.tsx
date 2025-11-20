@@ -6,6 +6,7 @@ import {
   getLectureDetailAPI,
   type LectureUploadResponse,
 } from "../../../api/lecture";
+import { createQuizAPI } from "../../../api/quiz";
 import QuizSkeleton from "./QuizSkeleton";
 import Sidebar from "./Sidebar";
 import UserMenu from "./UserMenu";
@@ -110,7 +111,7 @@ const ContentDetail = () => {
     "high" | "medium" | "low" | null
   >(null);
   const [questionType, setQuestionType] = useState<
-    "shortAnswer" | "trueFalse" | "multipleChoice" | null
+    "short" | "ox" | "multiple" | null
   >(null);
 
   // 계획 생성 설정 상태
@@ -383,13 +384,13 @@ const ContentDetail = () => {
                             <button
                               onClick={() =>
                                 setQuestionType(
-                                  questionType === "shortAnswer"
+                                  questionType === "short"
                                     ? null
-                                    : "shortAnswer"
+                                    : "short"
                                 )
                               }
                               className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
-                                questionType === "shortAnswer"
+                                questionType === "short"
                                   ? "bg-gray-800 text-white border-gray-800"
                                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                               }`}
@@ -399,13 +400,13 @@ const ContentDetail = () => {
                             <button
                               onClick={() =>
                                 setQuestionType(
-                                  questionType === "trueFalse"
+                                  questionType === "ox"
                                     ? null
-                                    : "trueFalse"
+                                    : "ox"
                                 )
                               }
                               className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
-                                questionType === "trueFalse"
+                                questionType === "ox"
                                   ? "bg-gray-800 text-white border-gray-800"
                                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                               }`}
@@ -415,13 +416,13 @@ const ContentDetail = () => {
                             <button
                               onClick={() =>
                                 setQuestionType(
-                                  questionType === "multipleChoice"
+                                  questionType === "multiple"
                                     ? null
-                                    : "multipleChoice"
+                                    : "multiple"
                                 )
                               }
                               className={`px-4 py-2 rounded border text-sm font-Pretendard transition-colors ${
-                                questionType === "multipleChoice"
+                                questionType === "multiple"
                                   ? "bg-gray-800 text-white border-gray-800"
                                   : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                               }`}
@@ -435,7 +436,12 @@ const ContentDetail = () => {
                         <button
                           onClick={async () => {
                             if (!difficulty || !questionType) {
-                              alert("난이도와 문제 유형을 선택해주세요.");
+                              toast.error("난이도와 문제 유형을 선택해주세요.");
+                              return;
+                            }
+
+                            if (!lectureData?.lectureId) {
+                              toast.error("강의 정보를 불러올 수 없습니다.");
                               return;
                             }
 
@@ -443,23 +449,32 @@ const ContentDetail = () => {
                             setShowQuizCreateForm(false);
 
                             try {
-                              // TODO: 퀴즈 생성 API 호출
-                              await new Promise((resolve) =>
-                                setTimeout(resolve, 2000)
+                              console.log("[퀴즈 생성] 호출 전 파라미터:", {
+                                lectureId: lectureData.lectureId,
+                                quizType: questionType, // "short" | "ox" | "multiple"
+                                quizNum: questionCount, // 문제 개수
+                                level: difficulty, // "high" | "medium" | "low"
+                              });
+
+                              // 퀴즈 생성 API 호출
+                              await createQuizAPI(
+                                lectureData.lectureId,
+                                questionType, // "short" | "ox" | "multiple"
+                                questionCount, // 문제 개수
+                                difficulty // "high" | "medium" | "low"
                               );
 
-                              console.log("퀴즈 생성:", {
-                                questionCount,
-                                difficulty,
-                                questionType,
-                              });
+                              toast.success("퀴즈가 생성되었습니다!");
+                              
+                              // TODO: 퀴즈 목록 새로고침 (퀴즈 목록 조회 API 필요)
                             } catch (error) {
                               console.error("퀴즈 생성 실패:", error);
+                              toast.error("퀴즈 생성에 실패했습니다.");
                             } finally {
                               setIsGeneratingQuiz(false);
                             }
                           }}
-                          disabled={!difficulty || !questionType}
+                          disabled={!difficulty || !questionType || !lectureData?.lectureId}
                           className="w-full px-6 py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-Pretendard font-semibold text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {t.content.generateQuiz}
