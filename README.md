@@ -1,14 +1,187 @@
-# Orbit AI
+# 🌍 Orbit AI (Made with CURSOR AI)
 
-Orbit AI - AI-powered lecture translation and learning platform
+> "이해하기 어려운 강의, 이제 Orbit AI와 함께하세요"
 
-Built with React + TypeScript + Vite
+---
 
-## API 설정
+## 💭 우리가 이 프로젝트를 시작한 이유
+
+대학 강의실에서 일어나는 일입니다.
+
+교수님이 영어로 강의를 하고 있고, 유학생 한 명이 노트북을 열어두고 있습니다. 강의 내용을 번역기로 돌려보려 하지만, 실시간 번역은 부정확하고 맥락을 놓치기 쉽습니다. 강의가 끝나고 나서도 "무엇을 배웠는지" 제대로 정리하지 못한 채 다음 수업으로 넘어갑니다.
+
+**이게 바로 우리가 해결하고 싶었던 문제였습니다.**
+
+유학생들은 단순히 번역만 필요한 게 아닙니다. 강의를 **이해**하고, **정리**하고, **복습**할 수 있는 통합적인 학습 도구가 필요합니다. 하지만 기존의 번역 서비스들은 단순히 텍스트만 변환해줄 뿐, 학습에 필요한 추가 기능은 제공하지 않았습니다.
+
+그래서 우리는 **Orbit AI**를 만들기로 했습니다.
+
+---
+
+## 🎯 Orbit AI가 해결하는 문제
+
+### 문제 1: 언어 장벽
+
+- 강의를 듣고 있지만 언어 때문에 내용을 제대로 이해하지 못함
+- 실시간 번역은 부정확하고 맥락을 놓치기 쉬움
+- 강의 녹음본을 나중에 다시 들어도 번역이 어려움
+
+### 문제 2: 학습 정리
+
+- 강의가 끝나도 무엇을 배웠는지 정리하지 못함
+- 요약, 복습 자료를 직접 만들 시간이 없음
+- 중요한 내용과 부수적인 내용을 구분하기 어려움
+
+### 문제 3: 효과적인 복습
+
+- 단순히 다시 듣는 것만으로는 부족
+- 자신의 이해도를 확인할 수 있는 방법이 없음
+- 시험 대비를 위한 문제 풀이 자료가 부족
+
+### 문제 4: 다국어 지원 부족
+
+- 대부분의 서비스가 영어 중심
+- 다양한 모국어를 가진 유학생들의 니즈를 충족하지 못함
+- 인터페이스 자체가 언어 장벽이 되는 경우
+
+---
+
+## ✨ Orbit AI의 해결책
+
+### 1. **자동 번역 및 요약**
+
+강의 파일(음성/영상)을 업로드하면 AI가 자동으로:
+
+- 음성을 텍스트로 변환 (STT: Speech-to-Text)
+- 선택한 언어로 정확한 번역 제공
+- 핵심 내용을 구조화된 요약으로 정리
+- 마크다운 형식으로 가독성 높은 문서 생성
+
+### 2. **스마트 퀴즈 생성**
+
+강의 내용을 바탕으로:
+
+- 단답형, O/X, 객관식 등 다양한 유형의 문제 자동 생성
+- 난이도 조절 가능 (쉬움/보통/어려움)
+- 문제 개수 사용자 지정 (1-10개)
+- 자신의 이해도를 확인하며 복습
+- 정답 및 해설 자동 제공
+
+### 3. **심화 학습 리뷰**
+
+단순 요약을 넘어:
+
+- 강의 내용을 더 깊이 이해할 수 있는 심화 콘텐츠 제공
+- 관련 개념과 배경 지식 설명
+- 마크다운 형식으로 구조화된 리뷰 문서
+
+### 4. **5개 언어 완벽 지원**
+
+한국어, 영어, 중국어, 일본어, 베트남어를 지원하여:
+
+- 인터페이스가 사용자의 모국어로 표시
+- 번역도 원하는 언어로 제공
+- 실시간 언어 변경 가능
+- 사용자 설정에 따라 자동 언어 적용
+
+### 5. **직관적인 폴더 관리**
+
+주제별로 강의를 정리하여:
+
+- 효율적인 학습 관리
+- 빠른 검색 및 접근
+- 폴더별 강의 목록 조회
+- 계층적 구조로 학습 자료 정리
+
+### 6. **학교 생활 Tips**
+
+유학생을 위한 실용적인 정보 제공:
+
+- 학교 생활에 필요한 다양한 팁
+- 카테고리별 정리된 정보
+- 다국어로 제공되는 실용 가이드
+
+---
+
+## 🛠️ 기술 스택
+
+우리는 **현대적이고 빠른** 기술 스택을 선택했습니다:
+
+### Frontend
+
+- **React 19** - 최신 React 기능을 활용한 사용자 인터페이스
+- **TypeScript** - 타입 안정성과 개발 생산성 향상
+- **Vite** - 빠른 개발 환경과 빌드 속도
+- **Tailwind CSS** - 유틸리티 기반 빠른 스타일링
+- **Zustand** - 가벼우면서도 강력한 상태 관리
+- **React Router** - 클라이언트 사이드 라우팅
+- **Axios** - 안정적인 HTTP 클라이언트
+- **React Hot Toast** - 사용자 친화적인 알림 시스템
+- **React Markdown** - 마크다운 콘텐츠 렌더링
+- **Lottie React** - 부드러운 애니메이션 효과
+
+### Backend
+
+- **Spring Boot** - 엔터프라이즈급 Java 애플리케이션 프레임워크
+- **Java** - 안정적이고 확장 가능한 백엔드 개발
+- **Spring Security** - 인증 및 인가 처리
+- **RESTful API** - 표준화된 API 설계
+- **JPA/Hibernate** - 데이터베이스 ORM
+- **MySQL/PostgreSQL** - 관계형 데이터베이스
+
+### AI/ML 서비스
+
+- **OpenAI API** - GPT 모델을 활용한 AI 기능
+  - 음성-텍스트 변환 (STT)
+  - 텍스트 번역
+  - 요약 생성
+  - 퀴즈 생성
+  - 심화 리뷰 생성
+- **LLM (Large Language Model)** - 대규모 언어 모델 활용
+  - 강의 내용 분석 및 처리
+  - 자연어 이해 및 생성
+  - 다국어 번역 지원
+
+### 인프라 및 배포
+
+- **AWS EC2** - 클라우드 서버 호스팅
+- **Vercel** - 프론트엔드 배포 플랫폼
+- **Docker** - 컨테이너화 (선택사항)
+
+### 개발 도구
+
+- **ESLint** - 코드 품질 관리
+- **TypeScript ESLint** - 타입 안전성 검증
+- **Vite Plugin React** - React 개발 환경 최적화
+- **Maven/Gradle** - Java 빌드 도구
+- **Postman** - API 테스트 도구
+
+이 기술 스택을 선택한 이유는 단순합니다: **빠르게 개발하고, 안정적으로 서비스하기 위해서**입니다.
+
+---
+
+## 🚀 시작하기
+
+### 필수 요구사항
+
+- Node.js 18.x 이상
+- npm 또는 yarn
+- 백엔드 API 서버 (또는 Mock 데이터 사용)
+
+### 설치
+
+```bash
+# 저장소 클론
+git clone <repository-url>
+cd my-project
+
+# 의존성 설치
+npm install
+```
 
 ### 환경 변수 설정
 
-프로젝트 루트에 `.env` 파일을 생성하고 다음을 추가하세요:
+프로젝트 루트에 `.env` 파일을 생성하세요:
 
 ```env
 # 개발 환경
@@ -18,89 +191,438 @@ VITE_API_BASE_URL=http://localhost:8080/api
 VITE_API_BASE_URL=https://your-ec2-domain.com/api
 ```
 
+**참고**: 환경 변수가 설정되어 있으면 실제 API를 호출하고, 없으면 Mock 데이터를 사용합니다.
+
+### 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+브라우저에서 `http://localhost:5173` (또는 Vite가 지정한 포트)로 접속하세요.
+
+### 빌드
+
+프로덕션 빌드를 생성하려면:
+
+```bash
+npm run build
+```
+
+빌드된 파일은 `dist` 폴더에 생성됩니다.
+
+### 미리보기
+
+프로덕션 빌드를 로컬에서 미리보려면:
+
+```bash
+npm run preview
+```
+
+---
+
+## 📁 프로젝트 구조
+
+```
+my-project/
+├── public/                 # 정적 파일
+│   ├── logo1.png          # 로고 이미지
+│   ├── icon.svg           # 파비콘
+│   └── ...
+├── src/
+│   ├── api/               # API 호출 함수들
+│   │   ├── axiosInstance.ts    # Axios 인스턴스 설정
+│   │   ├── auth.ts             # 인증 관련 API
+│   │   ├── lecture.ts          # 강의 관련 API
+│   │   ├── quiz.ts             # 퀴즈 관련 API
+│   │   ├── tips.ts             # Tips 관련 API
+│   │   └── folder.ts           # 폴더 관련 API
+│   ├── assets/            # 이미지, 아이콘 등
+│   ├── pages/             # 페이지 컴포넌트
+│   │   ├── home/          # 홈 페이지 (강의 관리)
+│   │   │   ├── components/
+│   │   │   │   ├── Sidebar.tsx           # 사이드바 네비게이션
+│   │   │   │   ├── UploadModal.tsx       # 파일 업로드 모달
+│   │   │   │   ├── CreateFolderModal.tsx # 폴더 생성 모달
+│   │   │   │   ├── ContentDetail.tsx     # 강의 상세 페이지
+│   │   │   │   ├── QuizDetail.tsx        # 퀴즈 상세 페이지
+│   │   │   │   ├── QuizSkeleton.tsx      # 퀴즈 로딩 UI
+│   │   │   │   ├── UploadSkeleton.tsx    # 업로드 로딩 UI
+│   │   │   │   ├── UserMenu.tsx          # 사용자 메뉴
+│   │   │   │   └── DeleteAccountModal.tsx # 계정 삭제 모달
+│   │   │   └── index.tsx
+│   │   ├── login/         # 로그인 페이지
+│   │   │   ├── components/
+│   │   │   │   ├── LoginForm.tsx    # 로그인 폼
+│   │   │   │   └── LoginIntro.tsx   # 로그인 소개 섹션
+│   │   │   └── index.tsx
+│   │   ├── signup/        # 회원가입 페이지
+│   │   │   ├── components/
+│   │   │   │   └── SignupForm.tsx
+│   │   │   └── index.tsx
+│   │   └── tips/          # Tips 페이지
+│   │       └── index.tsx
+│   ├── store/             # 상태 관리 (Zustand)
+│   │   ├── useAuthStore.ts      # 인증 상태 관리
+│   │   └── useLanguageStore.ts  # 언어 상태 관리 및 번역
+│   ├── utils/             # 유틸리티 함수
+│   │   └── LoginCTA.tsx   # 로그인 CTA 컴포넌트
+│   ├── App.tsx            # 메인 앱 컴포넌트
+│   ├── main.tsx           # 진입점
+│   └── index.css          # 전역 스타일
+├── dist/                  # 빌드 결과물
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+└── README.md
+```
+
+---
+
+## 🔌 API 연동
+
 ### API 구조
 
-- `src/api/axiosInstance.ts` - Axios 인스턴스 설정 (토큰 자동 추가, 에러 처리)
-- `src/api/auth.ts` - 인증 관련 API 함수들
-- `src/store/useAuthStore.ts` - Zustand 스토어 (API 호출)
+프로젝트는 RESTful API를 사용하며, 모든 API 호출은 `src/api/` 디렉토리에 정리되어 있습니다.
 
-### 사용 방법
+#### 주요 API 모듈
 
-환경 변수가 설정되어 있으면 실제 API를 호출하고, 없으면 Mock 데이터를 사용합니다.
+- **`axiosInstance.ts`** - Axios 인스턴스 설정
+
+  - 토큰 자동 추가 (Authorization 헤더)
+  - 에러 처리 및 인터셉터
+  - 타임아웃 설정
+
+- **`auth.ts`** - 인증 관련 API
+
+  - 로그인 (`loginAPI`)
+  - 회원가입 (`signupAPI`)
+  - 로그아웃 (토큰 제거)
+
+- **`lecture.ts`** - 강의 관련 API
+
+  - 강의 업로드 (`uploadLectureAPI`)
+  - 폴더별 강의 목록 조회 (`getLectureListByFolderAPI`)
+  - 강의 상세 조회 (`getLectureDetailAPI`)
+  - 리뷰 생성 (`createReviewAPI`)
+
+- **`quiz.ts`** - 퀴즈 관련 API
+
+  - 퀴즈 생성 (`createQuizAPI`)
+  - 퀴즈 목록 조회 (`getQuizListAPI`)
+  - 퀴즈 상세 조회 (`getQuizDetailAPI`)
+
+- **`folder.ts`** - 폴더 관련 API
+
+  - 폴더 생성 (`createFolderAPI`)
+  - 폴더 목록 조회 (`getFoldersAPI`)
+
+- **`tips.ts`** - Tips 관련 API
+  - Tips 목록 조회 (`getTipsAPI`)
+
+### 사용 예시
 
 ```typescript
 // API 호출 예시
 import { loginAPI } from "./api/auth";
+import { uploadLectureAPI } from "./api/lecture";
 
-const response = await loginAPI({ email, password });
+// 로그인
+const response = await loginAPI({
+  email: "user@example.com",
+  password: "password123",
+});
+
+// 강의 업로드
+const formData = new FormData();
+formData.append("file", file);
+const result = await uploadLectureAPI(userId, title, file, folderId);
 ```
 
-Currently, two official plugins are available:
+### 에러 처리
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+모든 API 호출은 `axiosInstance`를 통해 이루어지며, 에러는 자동으로 처리됩니다:
 
-## React Compiler
+- 401 에러: 자동 로그아웃 및 로그인 페이지로 리다이렉트
+- 기타 에러: 사용자에게 토스트 메시지로 알림
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🌐 다국어 지원
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Orbit AI는 다음 5개 언어를 완벽하게 지원합니다:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 🇰🇷 한국어 (KR)
+- 🇺🇸 English (EN)
+- 🇨🇳 中文 (CN)
+- 🇯🇵 日本語 (JP)
+- 🇻🇳 Tiếng Việt (VI)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 언어 변경 방법
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. **회원가입 시**: 사용자의 모국어를 선택
+2. **설정에서**: 언제든지 언어 변경 가능
+3. **자동 동기화**: 로그인 시 사용자 설정 언어로 자동 적용
+
+### 번역 시스템
+
+- 모든 텍스트는 `useLanguageStore`의 `translations` 객체를 통해 관리됩니다
+- 언어별로 완전히 번역된 인터페이스 제공
+- 실시간 언어 변경 지원
+
+---
+
+## 💡 주요 기능 상세
+
+### 1. 강의 업로드 및 번역
+
+**기능:**
+
+- 음성 또는 영상 파일 업로드 (최대 100MB)
+- 드래그 앤 드롭 지원
+- 자동 음성 인식 및 텍스트 변환
+- 선택한 언어로 자동 번역
+- 실시간 처리 진행 상황 표시
+
+**사용 방법:**
+
+1. 홈 화면에서 업로드 영역 클릭 또는 파일 드래그 앤 드롭
+2. 폴더 선택 및 수업 제목 입력
+3. 업로드 시작
+4. 처리 완료 후 자동으로 상세 페이지로 이동
+
+### 2. 학습 도구
+
+#### 요약 (Summary)
+
+- 강의 핵심 내용을 구조화된 요약으로 제공
+- 마크다운 형식으로 가독성 높은 문서
+- 자동 생성된 요약 확인
+
+#### 퀴즈 (Quiz)
+
+- **문제 유형**: 단답형, O/X, 객관식
+- **난이도**: 쉬움, 보통, 어려움
+- **문제 개수**: 1-10개 사용자 지정
+- 퀴즈 생성 후 상세 페이지에서 문제 풀이
+- 정답 확인 및 해설 제공
+
+#### 리뷰 (Review)
+
+- 강의 내용을 더 깊이 이해할 수 있는 심화 콘텐츠
+- 관련 개념과 배경 지식 설명
+- 마크다운 형식으로 구조화된 문서
+
+### 3. 폴더 관리
+
+**기능:**
+
+- 주제별 폴더 생성 및 관리
+- 폴더별 강의 목록 조회
+- 직관적인 사이드바 네비게이션
+- 폴더별 강의 정리
+
+**사용 방법:**
+
+1. 사이드바에서 "새 폴더 만들기" 클릭
+2. 폴더 이름 입력
+3. 폴더 생성 후 해당 폴더 선택
+4. 폴더 내 강의 목록 확인
+
+### 4. 학교 꿀팁
+
+**기능:**
+
+- 유학생을 위한 실용적인 Tips 제공
+- 카테고리별 정리된 정보
+- 다국어로 제공되는 가이드
+
+---
+
+## 🎬 시연 영상
+
+프로젝트 시연 영상이 있으시면 아래에 링크를 추가해주세요:
+
+```markdown
+[시연 영상 보기](여기에_영상_링크_추가)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+또는 YouTube, Vimeo 등의 링크를 추가하실 수 있습니다.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🏗️ 아키텍처
+
+### 전체 시스템 구조
+
 ```
+┌─────────────────┐
+│   Frontend       │
+│   (React + TS)   │
+│   Vercel 배포    │
+└────────┬─────────┘
+         │ HTTP/REST API
+         │
+┌────────▼─────────┐
+│   Backend        │
+│   Spring Boot    │
+│   AWS EC2 배포   │
+└────────┬─────────┘
+         │
+    ┌────┴────┬──────────────┐
+    │         │              │
+┌───▼───┐ ┌──▼───┐    ┌─────▼─────┐
+│  DB   │ │ OpenAI│    │  File     │
+│MySQL/ │ │  API  │    │  Storage  │
+│Postgre│ │       │    │           │
+└───────┘ └───────┘    └───────────┘
+```
+
+### 백엔드 아키텍처
+
+**Spring Boot 기반 RESTful API 서버:**
+
+- **Controller Layer**: REST API 엔드포인트 정의
+
+  - 인증/인가 처리
+  - 요청/응답 데이터 변환
+  - 예외 처리
+
+- **Service Layer**: 비즈니스 로직 처리
+
+  - 강의 업로드 및 처리
+  - AI 서비스 연동 (OpenAI API)
+  - 퀴즈 생성 로직
+  - 번역 및 요약 생성
+
+- **Repository Layer**: 데이터베이스 접근
+
+  - JPA/Hibernate를 통한 데이터 CRUD
+  - 사용자, 강의, 퀴즈, 폴더 관리
+
+- **AI Integration**: OpenAI API 연동
+  - 음성-텍스트 변환 (STT)
+  - 다국어 번역
+  - 요약 생성
+  - 퀴즈 문제 생성
+  - 심화 리뷰 생성
+
+### 프론트엔드 아키텍처
+
+**React 기반 SPA (Single Page Application):**
+
+- **상태 관리**: Zustand를 사용한 전역 상태 관리
+
+  - **`useAuthStore`**: 인증 상태 관리
+
+    - 사용자 정보 저장
+    - 로그인/로그아웃 함수
+    - localStorage와 동기화
+
+  - **`useLanguageStore`**: 언어 상태 관리
+    - 현재 선택된 언어
+    - 언어 변경 함수
+    - 번역 텍스트 제공
+
+- **라우팅**: React Router를 사용한 클라이언트 사이드 라우팅
+
+  - `/login` - 로그인 페이지
+  - `/signup` - 회원가입 페이지
+  - `/home` - 홈 페이지 (강의 목록)
+  - `/home/content/:contentId` - 강의 상세 페이지
+  - `/home/quiz/:id` - 퀴즈 상세 페이지
+  - `/tips` - Tips 페이지
+
+- **API 통신**: Axios를 통한 RESTful API 호출
+
+  - 인증 토큰 자동 추가
+  - 에러 처리 및 인터셉터
+  - 타임아웃 설정
+
+- **컴포넌트 구조**
+  - **페이지 컴포넌트**: 각 라우트에 대응하는 메인 컴포넌트
+  - **공통 컴포넌트**: 여러 페이지에서 재사용되는 컴포넌트
+  - **로딩 컴포넌트**: 스켈레톤 UI를 제공하는 컴포넌트
+
+### 데이터 흐름
+
+1. **강의 업로드 흐름**
+
+   ```
+   사용자 → Frontend (파일 업로드)
+   → Backend (파일 저장)
+   → OpenAI API (STT + 번역)
+   → Backend (결과 저장)
+   → Frontend (결과 표시)
+   ```
+
+2. **퀴즈 생성 흐름**
+
+   ```
+   사용자 → Frontend (퀴즈 생성 요청)
+   → Backend (강의 내용 조회)
+   → OpenAI API (퀴즈 생성)
+   → Backend (결과 저장)
+   → Frontend (퀴즈 표시)
+   ```
+
+3. **인증 흐름**
+   ```
+   사용자 → Frontend (로그인)
+   → Backend (인증 처리)
+   → JWT 토큰 발급
+   → Frontend (토큰 저장)
+   → 이후 요청에 토큰 자동 포함
+   ```
+
+---
+
+## 🧪 개발 가이드
+
+### 코드 스타일
+
+- **TypeScript** 사용 필수
+- **ESLint** 규칙 준수
+- **함수형 컴포넌트** 사용
+- **Hooks** 활용
+
+---
+
+## 🤝 기여자 (Contributors)
+
+이 프로젝트는 명지대학교 해커톤에서 시작되었으며, 다음 분들이 기여하셨습니다.
+
+### 개발팀 Learnie (최원빈, 강예린, 이범진, 김예일, 손태용, 이서현)
+
+<!-- 기여자 정보를 추가해주세요 -->
+
+### 특별 감사
+
+- 명지대학교 해커톤 주최진
+- 프로젝트에 피드백을 주신 모든 분들
+
+**기여자 정보를 추가하거나 수정하려면 이 섹션을 편집해주세요.**
+
+---
+
+### 이슈 리포트
+
+버그를 발견하거나 기능 제안이 있으시면 [Issues](https://github.com/your-username/my-project/issues)에 등록해주세요.
+
+---
+
+## 📄 라이선스
+
+이 프로젝트는 명지대학교 해커톤 프로젝트입니다.
+
+---
+
+## 📚 추가 자료
+
+- [시연 시나리오](./DEMO_SCENARIO.md) - 프로젝트 시연 가이드
+
+---
+
+**Made with ❤️ for International Students**
+
+_언어가 장벽이 되지 않는 학습 환경을 만들어갑니다._
